@@ -8,8 +8,8 @@ import openai
 load_dotenv()
 
 # Retrieve OpenAI and Anthropic credentials from environment variables
-OPENAI_KEY = os.getenv("KEY")  # OpenAI API key
-OPENAI_ORG = os.getenv("ORG")  # OpenAI organization ID
+OPENAI_KEY = os.getenv("OPENAI_KEY")  # OpenAI API key
+OPENAI_ORG = os.getenv("OPENAI_ORG")  # OpenAI organization ID
 ANTHROPIC_KEY = os.getenv("ANTHROPIC_KEY")  # Anthropic API key
 
 # Set up OpenAI credentials
