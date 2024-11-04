@@ -49,21 +49,25 @@ class UniversalAPICaller:
                 )
 
         except Exception as primary_error:
-            print(f"\nPrimary provider '{provider}' encountered an error:\n")
-            print(f"{primary_error}\n")
+            print(
+                f"\nPrimary provider '{provider}' encountered an error:\n{primary_error}\n"
+            )
+
+            # Convert fail_safe parameter into a queue of providers to try
             if fail_safe:
-                fail_safe_provider, fail_safe_model = fail_safe
-                print(
-                    f"Attempting fail-safe with provider '{fail_safe_provider}' ({fail_safe_model})...\n"
+                fail_safe_queue = (
+                    fail_safe if isinstance(fail_safe, list) else [fail_safe]
                 )
+                print("Attempting fail-safe providers in priority order...\n")
+                # Pass down all relevant parameters to fail_safe_handler
                 return fail_safe_handler(
-                    fail_safe_provider,
-                    fail_safe_model,
+                    fail_safe_queue,
                     messages,
-                    max_tokens,
-                    temperature,
+                    max_tokens=max_tokens,
+                    temperature=temperature,
                     **kwargs,
                 )
+
             raise primary_error
 
     def text_to_image(
@@ -87,20 +91,17 @@ class UniversalAPICaller:
                 )
 
         except Exception as primary_error:
-            # Enhanced formatting for clearer separation of the error components
-            print(f"\nPrimary provider '{provider}' encountered an error:\n")
             print(
-                f"Error code: {getattr(primary_error, 'code', 'Unknown')} - {primary_error}\n"
+                f"\nPrimary provider '{provider}' encountered an error:\n{primary_error}\n"
             )
 
             if fail_safe:
-                fail_safe_provider, fail_safe_model = fail_safe
-                print(
-                    f"Attempting fail-safe with provider '{fail_safe_provider}' ({fail_safe_model})...\n"
+                fail_safe_queue = (
+                    fail_safe if isinstance(fail_safe, list) else [fail_safe]
                 )
+                print("Attempting fail-safe providers in priority order...\n")
                 return fail_safe_handler(
-                    fail_safe_provider,
-                    fail_safe_model,
+                    fail_safe_queue,
                     prompt=prompt,
                     size=size,
                     n=n,

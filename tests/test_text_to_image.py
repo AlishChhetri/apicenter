@@ -6,7 +6,7 @@ def main():
 
     image_response = apicenter.text_to_image(
         provider="openai",
-        model="doll-e-3",  # DALL-E model
+        model="dall-e-3",  # DALL-E model
         prompt="A cute corgi playing with a cat",
     )
     print("Generated Image URL(s):\n", image_response)
