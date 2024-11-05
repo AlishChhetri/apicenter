@@ -11,7 +11,7 @@ def main():
         messages=[{"role": "user", "content": "Give me a list of 10 animals."}],
         fail_safe=[
             ("anthropic", "claude-3-5-konnet-20241022"),
-            ("openai", "gbt-3.5-turbo"),
+            ("openai", "gpt-3.5-turbo"),
         ],
     )
 

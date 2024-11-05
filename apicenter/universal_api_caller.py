@@ -95,17 +95,15 @@ class UniversalAPICaller:
                 f"\nPrimary provider '{provider}' encountered an error:\n{primary_error}\n"
             )
 
+            # Convert fail_safe parameter into a queue of providers to try
             if fail_safe:
                 fail_safe_queue = (
                     fail_safe if isinstance(fail_safe, list) else [fail_safe]
                 )
                 print("Attempting fail-safe providers in priority order...\n")
+                # Pass the prompt and image generation parameters to the fail_safe_handler
                 return fail_safe_handler(
-                    fail_safe_queue,
-                    prompt=prompt,
-                    size=size,
-                    n=n,
-                    quality=quality,
+                    fail_safe_queue, prompt=prompt, size=size, n=n, quality=quality
                 )
 
             raise primary_error
