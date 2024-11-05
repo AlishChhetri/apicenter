@@ -2,11 +2,15 @@
 
 from apicenter.llm import LLM
 from apicenter.text_to_image import TextToImage
+from apicenter.computer_vision import ComputerVision
 from apicenter.fail_safe_handler import fail_safe_handler
 
 
 class UniversalAPICaller:
-    """Handles both LLM and text-to-image API calls"""
+    """Handles both LLM, text-to-image, and computer vision API calls"""
+
+    def __init__(self):
+        self._cv = ComputerVision()
 
     def llm(
         self,
@@ -18,51 +22,37 @@ class UniversalAPICaller:
         fail_safe=None,
         **kwargs,
     ):
-        """Calls the specified LLM API (OpenAI or Anthropic) with the given configuration."""
+        """Calls the specified LLM API with the given configuration."""
 
         llm = LLM()
-
         try:
             if provider.lower() == "openai":
-                response = llm.call_openai_api(
+                return llm.call_openai_api(
                     model=model,
                     messages=messages,
                     max_tokens=max_tokens,
                     temperature=temperature,
                 )
-                return response
-
             elif provider.lower() == "anthropic":
-                system_prompt = kwargs.get("system", "You are a helpful assistant.")
-                response = llm.call_anthropic_api(
+                return llm.call_anthropic_api(
                     model=model,
-                    system=system_prompt,
+                    system=kwargs.get("system", "You are a helpful assistant."),
                     messages=messages,
                     max_tokens=max_tokens,
                     temperature=temperature,
                 )
-
-                return (
-                    response[0].text
-                    if isinstance(response, list) and hasattr(response[0], "text")
-                    else response
-                )
-
         except Exception as primary_error:
             print(
-                f"\nPrimary provider '{provider}' encountered an error:\n{primary_error}\n"
+                f"Primary provider '{provider}' encountered an error:\n{primary_error}\n"
             )
 
-            # Convert fail_safe parameter into a queue of providers to try
             if fail_safe:
                 fail_safe_queue = (
                     fail_safe if isinstance(fail_safe, list) else [fail_safe]
                 )
-                print("Attempting fail-safe providers in priority order...\n")
-                # Pass down all relevant parameters to fail_safe_handler
                 return fail_safe_handler(
                     fail_safe_queue,
-                    messages,
+                    messages=messages,
                     max_tokens=max_tokens,
                     temperature=temperature,
                     **kwargs,
@@ -80,30 +70,64 @@ class UniversalAPICaller:
         quality="standard",
         fail_safe=None,
     ):
-        """Calls the specified text-to-image API (like DALL-E) with the given configuration."""
+        """Calls the specified text-to-image API with the given configuration."""
 
         text_to_image = TextToImage()
-
         try:
             if provider.lower() == "openai":
                 return text_to_image.call_openai_dalle(
                     model=model, prompt=prompt, size=size, n=n, quality=quality
                 )
-
         except Exception as primary_error:
             print(
-                f"\nPrimary provider '{provider}' encountered an error:\n{primary_error}\n"
+                f"Primary provider '{provider}' encountered an error:\n{primary_error}\n"
             )
 
-            # Convert fail_safe parameter into a queue of providers to try
             if fail_safe:
                 fail_safe_queue = (
                     fail_safe if isinstance(fail_safe, list) else [fail_safe]
                 )
-                print("Attempting fail-safe providers in priority order...\n")
-                # Pass the prompt and image generation parameters to the fail_safe_handler
                 return fail_safe_handler(
                     fail_safe_queue, prompt=prompt, size=size, n=n, quality=quality
+                )
+
+            raise primary_error
+
+    def computer_vision(self, provider, model, prompt, fail_safe=None, **kwargs):
+        """Processes computer vision tasks using the specified provider and model."""
+
+        try:
+            task_type = prompt.get("task_type", "image")
+            source = prompt.get("source")
+
+            if task_type == "image":
+                return self._cv.process_image(provider, model, source, **kwargs)
+            elif task_type == "video":
+                return self._cv.process_video(
+                    provider,
+                    model,
+                    source,
+                    output_path=prompt.get("output_path"),
+                    **kwargs,
+                )
+            elif task_type == "realtime":
+                return self._cv.realtime_camera(
+                    provider, model, camera_id=prompt.get("camera_id", 0), **kwargs
+                )
+            else:
+                raise ValueError(f"Unsupported task type: {task_type}")
+
+        except Exception as primary_error:
+            print(
+                f"Primary provider '{provider}' encountered an error:\n{primary_error}\n"
+            )
+
+            if fail_safe:
+                fail_safe_queue = (
+                    fail_safe if isinstance(fail_safe, list) else [fail_safe]
+                )
+                return fail_safe_handler(
+                    fail_safe_queue, task_type=task_type, source=source, **kwargs
                 )
 
             raise primary_error
