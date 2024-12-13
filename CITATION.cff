@@ -1,0 +1,10 @@
+cff-version: 0.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Chhetri"
+    given-names: "Alish"
+    email: "chhetri01@allegheny.edu"
+title: "APICenter"
+version: 0.1.0
+date-released: 2024-10-11
+url: "https://github.com/AlishChhetri/apicenter"
