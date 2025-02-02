@@ -9,10 +9,6 @@ def main():
         provider="openai",
         model="gbt-4",  # Invalid model to trigger primary provider error
         messages=[{"role": "user", "content": "Give me a list of 10 animals."}],
-        fail_safe=[
-            ("anthropic", "claude-3-5-konnet-20241022"),
-            ("openai", "gpt-3.5-turbo"),
-        ],
     )
 
     print("Final Response:\n", response)
