@@ -1,18 +1,29 @@
 from openai import OpenAI
 from anthropic import Anthropic
 from ollama import chat as ollama_chat
-from config import config
+from apicenter.config import config
 
 
 class LLMProvider:
     def __init__(self, provider, model, prompt, **kwargs):
         self.provider = provider.lower()
         self.model = model
-        self.prompt = prompt
+        self.prompt = self._format_prompt(prompt)
         self.kwargs = kwargs  # Stores all optional params
 
         # Load credentials (returns {} if none needed)
         self.credentials = config.get_credentials(self.provider)
+
+    def _format_prompt(self, prompt):
+        """Format the prompt to ensure it meets the API requirements."""
+        if isinstance(prompt, str):
+            return [{"role": "user", "content": prompt}]
+        elif isinstance(prompt, list):
+            return prompt
+        else:
+            raise ValueError(
+                "Invalid prompt format. Must be a string or a list of messages."
+            )
 
     def get_response(self):
         """Automatically call the right API based on provider."""
@@ -32,7 +43,7 @@ class LLMProvider:
 
         response = client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "user", "content": self.prompt}],
+            messages=self.prompt,
             **self.kwargs,  # Pass optional params (e.g., temperature, stream)
         )
         return response.choices[0].message.content
@@ -42,7 +53,7 @@ class LLMProvider:
 
         response = client.messages.create(
             model=self.model,
-            messages=[{"role": "user", "content": self.prompt}],
+            messages=self.prompt,
             **self.kwargs,
         )
         return response.content
@@ -51,7 +62,7 @@ class LLMProvider:
         """Ollama is a local model (no credentials needed)."""
         response = ollama_chat(
             model=self.model,
-            messages=[{"role": "user", "content": self.prompt}],
+            messages=self.prompt,
             **self.kwargs,
         )
         return response.message.content
@@ -61,7 +72,7 @@ class LLMProvider:
 
         response = client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "user", "content": self.prompt}],
+            messages=self.prompt,
             **self.kwargs,
         )
         return response.choices[0].message.content

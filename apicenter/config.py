@@ -1,5 +1,4 @@
 import os
-import json
 from dotenv import load_dotenv
 
 # Load environment variables from .env
@@ -9,17 +8,30 @@ load_dotenv()
 class APIConfig:
     def __init__(self):
         """Load and parse API credentials from environment variables."""
-        json_string = os.getenv("API_CREDENTIALS")
-
-        if not json_string:
-            raise ValueError("Missing API_CREDENTIALS in .env file.")
-
-        try:
-            self.credentials = json.loads(json_string)
-        except json.JSONDecodeError:
-            raise ValueError(
-                "Invalid JSON format in API_CREDENTIALS. Please check your .env file."
-            )
+        self.credentials = {
+            "openai": {
+                "api_key": os.getenv("OPENAI_API_KEY"),
+                "organization": os.getenv("OPENAI_ORGANIZATION")
+            },
+            "anthropic": {
+                "api_key": os.getenv("ANTHROPIC_API_KEY")
+            },
+            "deepseek": {
+                "api_key": os.getenv("DEEPSEEK_API_KEY"),
+                "base_url": os.getenv("DEEPSEEK_BASE_URL")
+            },
+            "monster": {
+                "api_key": os.getenv("MONSTER_API_KEY")
+            },
+            "stablediffusion": {
+                "api_key": os.getenv("STABLEDIFFUSION_API_KEY"),
+                "base_url": os.getenv("STABLEDIFFUSION_BASE_URL")
+            },
+            "creatomate": {
+                "api_key": os.getenv("CREATOMATE_API_KEY"),
+                "base_url": os.getenv("CREATOMATE_BASE_URL")
+            }
+        }
 
     def get_credentials(self, provider):
         """Retrieve credentials for a given API provider (LLMs & Image APIs)."""

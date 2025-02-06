@@ -1,6 +1,6 @@
 import requests
 from openai import OpenAI
-from config import config
+from apicenter.config import config
 
 
 class TextToImageProvider:
