@@ -1,44 +1,83 @@
-"""LLM class to handle requests to both Anthropic and OpenAI APIs"""
-
-import anthropic
-import openai
-
-from apicenter.config import ANTHROPIC_KEY, OPENAI_KEY, OPENAI_ORG
+from openai import OpenAI
+from anthropic import Anthropic
+from ollama import chat as ollama_chat
+from apicenter.config import config
 
 
+class LLMProvider:
+    def __init__(self, provider, model, prompt, **kwargs):
+        self.provider = provider.lower()
+        self.model = model
+        self.prompt = self._format_prompt(prompt)
+        self.kwargs = kwargs  # Stores all optional params
 
-class LLM:
-    """Handles requests to both Anthropic and OpenAI APIs"""
+        # Load credentials (returns {} if none needed)
+        self.credentials = config.get_credentials(self.provider)
 
-    def __init__(self):
-        # Initialize clients for both APIs
-        self.anthropic_client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
-        self.openai_client = openai.OpenAI(api_key=OPENAI_KEY, organization=OPENAI_ORG)
-
-    def call_anthropic_api(
-        self, model, system, messages, max_tokens=100, temperature=0.7
-    ):
-        """Sends a request to the Anthropic API with specified configurations"""
-        message = self.anthropic_client.messages.create(
-            model=model,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            system=system,
-            messages=messages,
-        )
-
-        # Return just the text content to keep the output format consistent
-        if hasattr(message, "content"):
-            return message.content
+    def _format_prompt(self, prompt):
+        """Format the prompt to ensure it meets the API requirements."""
+        if isinstance(prompt, str):
+            return [{"role": "user", "content": prompt}]
+        elif isinstance(prompt, list):
+            return prompt
         else:
-            return message
+            raise ValueError(
+                "Invalid prompt format. Must be a string or a list of messages."
+            )
 
-    def call_openai_api(self, model, messages, max_tokens=100, temperature=0.7):
-        """Sends a request to the OpenAI API with specified configurations"""
-        response = self.openai_client.chat.completions.create(
-            model=model,
-            messages=messages,
-            max_tokens=max_tokens,
-            temperature=temperature,
+    def get_response(self):
+        """Automatically call the right API based on provider."""
+        providers = {
+            "openai": self._call_openai,
+            "anthropic": self._call_anthropic,
+            "ollama": self._call_ollama,
+            "deepseek": self._call_deepseek,
+        }
+
+        return providers.get(
+            self.provider, lambda: f"Error: Unsupported provider {self.provider}"
+        )()
+
+    def _call_openai(self):
+        client = OpenAI(**self.credentials)
+
+        response = client.chat.completions.create(
+            model=self.model,
+            messages=self.prompt,
+            **self.kwargs,  # Pass optional params (e.g., temperature, stream)
         )
-        return response.choices[0].message.content.strip()
+        return response.choices[0].message.content
+
+    def _call_anthropic(self):
+        client = Anthropic(**self.credentials)
+
+        response = client.messages.create(
+            model=self.model,
+            messages=self.prompt,
+            **self.kwargs,
+        )
+        return response.content
+
+    def _call_ollama(self):
+        """Ollama is a local model (no credentials needed)."""
+        response = ollama_chat(
+            model=self.model,
+            messages=self.prompt,
+            **self.kwargs,
+        )
+        return response.message.content
+
+    def _call_deepseek(self):
+        client = OpenAI(**self.credentials)
+
+        response = client.chat.completions.create(
+            model=self.model,
+            messages=self.prompt,
+            **self.kwargs,
+        )
+        return response.choices[0].message.content
+
+
+def llm(provider, model, prompt, **kwargs):
+    """Universal function to call any supported AI model with minimal input."""
+    return LLMProvider(provider, model, prompt, **kwargs).get_response()
