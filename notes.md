@@ -1,76 +1,148 @@
-# APICENTER Development Diary
+Below is the concept for my project "APIcenter". Can you implement this? how do i 
 
-### November 21, 2024
+# APICenter: Core Structure
 
-**Key Features:**
-- Unified Platform: Combines AI tools into one interface.
-- Customization: Import and organize APIs and models.
-- Modular Design: Adaptable to new AI technologies.
+## Basic Concept
+APICenter is a Python package that provides a unified interface for AI services, focusing on simplicity and standardization.
 
-### November 22, 2024
+## Package Structure
 
-**Metrics for Evaluation:**
-- Accuracy and Performance: Model accuracy, response time.
-- Usability: User satisfaction, learning curve.
-- Reliability: Uptime, fail-safe effectiveness.
-- Scalability: Concurrent users, load testing.
-- Integration: Compatibility, interoperability.
+```
+apicenter/
+├── apicenter/                # Main package directory
+│   ├── __init__.py          # Package initialization, public interfaces
+│   ├── core/                # Core functionality
+│   │   ├── __init__.py
+│   │   ├── types.py         # Shared data types and interfaces
+│   │   ├── config.py        # Configuration management
+│   │   ├── errors.py        # Custom exceptions
+│   │   └── utils.py         # Shared utilities
+│   ├── llm/                 # Language model functionality
+│   │   ├── __init__.py      # Public LLM interface
+│   │   ├── base.py          # Base LLM provider class
+│   │   └── providers/       # LLM-specific implementations
+│   │       ├── openai.py
+│   │       ├── anthropic.py
+│   │       └── ollama.py
+│   ├── image/               # Image generation functionality
+│   │   ├── __init__.py      # Public image interface
+│   │   ├── base.py          # Base image provider class
+│   │   └── providers/       # Image-specific implementations
+│   │       ├── dalle.py
+│   │       └── stability.py
+│   └── ...                  # Future capabilities
+├── tests/                   # Test suite
+│   ├── __init__.py
+│   ├── conftest.py         # Test configuration
+│   ├── test_llm/           # LLM-specific tests
+│   │   ├── test_openai.py
+│   │   └── test_anthropic.py
+│   └── test_image/         # Image-specific tests
+├── examples/               # Usage examples
+│   ├── llm_examples.py
+│   └── image_examples.py
+├── docs/                  # Documentation
+│   ├── getting_started.md
+│   └── api_reference.md
+├── .env                   # Environment variables
+├── .gitignore
+├── pyproject.toml        # Project metadata and dependencies
+├── README.md            # Project overview
+└── LICENSE             # License information
+```
 
-### November 23, 2024
+## Core Interface
+```python
+import apicenter
 
-**AI Issues to Address:**
-- Environmental Impact: Energy consumption, carbon footprint.
-- Data Privacy: Data breaches, user consent.
-- Bias and Fairness: Algorithmic bias, transparency.
-- Ethical Considerations: Job displacement, accountability.
-- Accessibility: Digital divide, affordability.
-- Sustainability: Green AI, sustainable practices.
+# Language Models (Text Generation)
+response = apicenter.llm(
+    provider="anthropic",    # AI service provider
+    model="claude-3",       # Model identifier
+    prompt="Hello!",        # Input content
+    temperature=0.7         # Optional parameters
+)
 
-**How APICENTER Helps:**
-- Optimizes resource usage, enforces data privacy, implements bias detection, ensures human oversight, promotes sustainability.
-- Priorize smaller models to lower computational cost.
+# Image Generation
+image = apicenter.image(
+    provider="openai",
+    model="dall-e-3",
+    prompt="A sunset",
+    size="1024x1024"
+)
+```
 
-### November 24, 2024
+## Supported Capabilities
 
-**Refinement:**
-- Emphasized core benefits of APICENTER.
-- Prepared document for final submission.
+### Language Models (LLM)
+```python
+Providers:
+├── OpenAI        # GPT-4, GPT-3.5
+├── Anthropic     # Claude
+└── Ollama       # Local models
 
-### November 25, 2024
+Common Parameters:
+├── temperature   # Response randomness (0.0-1.0)
+├── max_tokens    # Maximum response length
+└── stream       # Stream response chunks
+```
 
-**Final Review:**
-- Conducted final review and made minor adjustments.
-- Compiled notes and documentation for submission.
-- Prepared presentation for senior thesis defense.
+### Image Generation
+```python
+Providers:
+├── OpenAI        # DALL-E
+├── Stability     # Stable Diffusion
+└── Midjourney   # Via API
 
-### Potential Projects Using APICENTER
+Common Parameters:
+├── size         # Image dimensions
+├── style        # Art style
+└── quality      # Output quality
+```
 
-1. **AI-Powered Customer Support:**
-   - Integrate chatbots and virtual assistants using LLMs.
-   - Automate responses and improve customer service efficiency.
-  
-2. **Content Generation Tools:**
-   - Combine text-to-image and LLMs for creative content creation.
-   - Develop tools for generating articles, images, and videos.
+## Flow
+1. User calls appropriate module (llm/image/...)
+2. APICenter validates request parameters
+3. Routes to provider implementation
+4. Handles API call and errors
+5. Returns standardized response
 
-3. **Educational Platforms:**
-   - Create personalized learning experiences using AI.
-   - Develop tools for automated grading and feedback.
+## Environmental Features
+- Automatic model selection based on task requirements
+- Local model prioritization when available
+- Resource usage tracking and reporting
+- Efficient request batching
 
+## Error Handling
+```python
+try:
+    response = apicenter.llm(
+        provider="anthropic",
+        model="claude-3",
+        prompt="Hello!"
+    )
+except apicenter.ProviderError:
+    # Automatic fallback to alternative provider
+    response = apicenter.llm(
+        provider="openai",
+        model="gpt-4",
+        prompt="Hello!"
+    )
+```
 
-### November 27, 2024
+## Response Standardization
+```python
+# All responses follow consistent format
+response = apicenter.llm(...)
 
-pipeline to test 
+print(response.text)          # Generated content
+print(response.metadata)      # Usage info, model details
+print(response.raw_response)  # Provider-specific response
+```
 
-user input -> llm interpretation of user input; choose the best `mode` for the input, priortize the most lightweight model for enviromental impact -> forward `user input` to the approiate `mode`; apicenter will handle this matching -> output a response from the `mode` and `model` -> show the user the output
-
-frontend
-
-chatgpt style of chat interface, allow user to edit configs (allow the user to enter their api key(s))
-
-TODO:
-
-- Create `Figma` page for the frontend mock up
-- write the introduction chapter, minimum 10 pages
-- write related work chapter, minimum 10 pages
-
+## Benefits
+- 🚀 Simple, intuitive interface
+- 🔄 Easy provider switching
+- 🛡️ Built-in error handling
+- 🌱 Environmental consciousness
+- 📊 Usage tracking and reporting

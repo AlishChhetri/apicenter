@@ -1,27 +1,20 @@
 import sys
-sys.path.append("/home/alishchhetri/comp/apicenter")
+import os
 
-from apicenter.new_llm import llm
+# Add the project root directory to Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from apicenter.llm.llm import llm
 
 
 def main():
-    """Main function to test universal_api_caller with multiple fail-safe providers."""
-
-    # Minimal prompt format
+    """Main function to test LLM providers."""
     response = llm(
-        provider="openai",
-        model="gpt-4",  # Invalid model to trigger primary provider error
-        prompt="Give me a list of 10 animals.",
+        provider="anthropic",
+        model="claude-3-sonnet-20240229",
+        prompt="Give me a list of 5 animals.",
     )
-    print("Final Response (Minimal):\n", response)
-
-    # Detailed prompt format
-    response = llm(
-        provider="openai",
-        model="gpt-4",
-        prompt=[{"role": "user", "content": "Give me a list of 10 animals."}],
-    )
-    print("Final Response (Detailed):\n", response)
+    print("Final Response (Minimal anthropic):\n", response)
 
 
 if __name__ == "__main__":
