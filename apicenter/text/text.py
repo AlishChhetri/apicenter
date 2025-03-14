@@ -5,13 +5,13 @@ from .providers.ollama import call_ollama
 from .providers.deepseek import call_deepseek
 
 
-class LLMProvider:
+class TextProvider:
     def __init__(self, provider, model, prompt, **kwargs):
         self.provider = provider.lower()
         self.model = model
         self.prompt = self.format_prompt(prompt)
         self.kwargs = kwargs
-        self.credentials = credentials.get_credentials("llm", self.provider)
+        self.credentials = credentials.get_credentials("text", self.provider)
 
     def format_prompt(self, prompt):
         """Format the prompt to ensure it meets the API requirements."""
@@ -38,6 +38,6 @@ class LLMProvider:
         )()
 
 
-def llm(provider, model, prompt, **kwargs):
+def text(provider, model, prompt, **kwargs):
     """Universal function to call any supported AI model with minimal input."""
-    return LLMProvider(provider, model, prompt, **kwargs).get_response()
+    return TextProvider(provider, model, prompt, **kwargs).get_response()
