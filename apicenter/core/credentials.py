@@ -23,15 +23,7 @@ class CredentialsProvider:
             )
 
     def get_credentials(self, mode, provider):
-        """Get credentials for a specific mode and provider.
-        
-        Args:
-            mode (str): The mode ('llm' or 'image')
-            provider (str): The provider name
-            
-        Returns:
-            dict: Provider credentials
-        """
+        """Get credentials for a specific mode and provider."""
         try:
             return self.credentials["modes"][mode]["providers"][provider]
         except KeyError:

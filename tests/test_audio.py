@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from apicenter.audio.audio import audio
+from apicenter.apicenter import apicenter
 
 def test_elevenlabs_minimal():
     """Test ElevenLabs with minimal parameters."""
@@ -12,7 +12,7 @@ def test_elevenlabs_minimal():
     output_dir.mkdir(exist_ok=True)
     
     # Minimal parameters
-    response = audio(
+    response = apicenter.audio(
         provider="elevenlabs",
         model="eleven_multilingual_v2",
         prompt="Hello, this is a test with minimal parameters.",
@@ -32,7 +32,7 @@ def test_elevenlabs_detailed():
     output_dir.mkdir(exist_ok=True)
     
     # Detailed parameters
-    response = audio(
+    response = apicenter.audio(
         provider="elevenlabs",
         model="eleven_multilingual_v2",
         prompt="This is a test with additional parameters.",
@@ -56,7 +56,7 @@ def test_google_minimal():
     output_dir.mkdir(exist_ok=True)
     
     # Minimal parameters
-    response = audio(
+    response = apicenter.audio(
         provider="google",
         model="en-US-Neural2-A",
         prompt="Hello, this is a test of Google Text-to-Speech.",
@@ -78,7 +78,7 @@ def test_google_detailed():
     from google.cloud import texttospeech
     
     # Detailed parameters
-    response = audio(
+    response = apicenter.audio(
         provider="google",
         model="en-US-Neural2-A",
         prompt="This is a test with additional parameters.",

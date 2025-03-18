@@ -5,12 +5,12 @@ from pathlib import Path
 # Add the project root directory to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from apicenter.image.image import image
+from apicenter.apicenter import apicenter
 
 
 def test_openai_url():
     """Test OpenAI DALL-E image generation."""
-    response = image(
+    response = apicenter.image(
         provider="openai",
         model="dall-e-3",
         prompt="a cute puppy",
@@ -25,7 +25,7 @@ def test_openai_byte():
     output_dir.mkdir(exist_ok=True)
 
     # Test direct image output
-    response = image(
+    response = apicenter.image(
         provider="openai",
         model="dall-e-3",
         prompt="a cute puppy",
@@ -47,7 +47,7 @@ def test_stability():
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
 
-    response = image(
+    response = apicenter.image(
         provider="stability",
         model="ultra",
         prompt="a cute puppy playing in the snow",
