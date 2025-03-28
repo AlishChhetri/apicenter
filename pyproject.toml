@@ -1,20 +1,31 @@
 [tool.poetry]
 name = "apicenter"
 version = "0.1.0"
-description = "This is Alish Chhetri's senior thesis project named 'apicenter'."
-authors = ["AlishChhetri <chhetri01@allegheny.edu>"]
-readme = "README.md"
+description = ""
+authors = ["Alish Chhetri <chhetri01@allegheny.edu>"]
+
+[tool.poetry.scripts]
+apicenter = "apicenter.main:cli"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-openai = "^1.51.2"
-anthropic = "^0.36.1"
-python-dotenv = "^1.0.1"
-rich = "^13.9.2"
+openai = "^1.69.0"
+anthropic = "^0.49.0"
+pillow = "^11.1.0"
+requests = "^2.32.0"
+elevenlabs = "^1.55.0"
+stability-sdk = "^0.8.6"
+ollama = "^0.4.7"
 
-[tool.poetry.scripts]
-apicenter = "apicenter.api_caller:main"
+[tool.poetry.group.dev.dependencies]
+black = "^21.8b0"
+taskipy = "^1.8.1"
+flake8 = "^3.9.2"
+pydocstyle = "^6.1.1"
+pylint = "^2.10.2"
+mypy = "^0.910"
+pytest = "^7.1.1"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
