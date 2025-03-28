@@ -1,80 +1,93 @@
 # APICenter
 
-A universal Python SDK for AI APIs that supports multiple modes (text, image, audio) with a simple and consistent interface.
+A universal Python SDK for AI APIs that provides a simple and consistent interface for multiple AI providers. APICenter standardizes the way you interact with different AI services, making it easy to switch between providers without changing your code.
 
 ## Features
 
-- Support for multiple AI providers:
-  - Text: OpenAI, Anthropic
-  - Image: OpenAI DALL-E, Stability AI
-  - Audio: ElevenLabs
-- Simple and consistent API interface
-- Flexible credential management
-- Easy to extend with new providers and modes
+- **Universal Interface**: Same simple API structure for all providers
+- **Multiple Modes**:
+  - Text Generation (OpenAI, Anthropic)
+  - Image Generation (OpenAI DALL-E, Stability AI)
+  - Audio Generation (ElevenLabs)
+- **Flexible Configuration**: Easy credential management
+- **Type Safety**: Full type hints and validation
+- **Error Handling**: Comprehensive error handling and validation
+- **Extensible**: Easy to add new providers and modes
 
 ## Installation
 
 ```bash
+# Using pip
+pip install apicenter
+
+# Using poetry
 poetry add apicenter
+```
+
+## Quick Start
+
+```python
+from apicenter import apicenter
+
+# Generate text
+response = apicenter.text(
+    provider="anthropic",
+    model="claude-3-sonnet-20240229",
+    prompt="Write a haiku about programming"
+)
+
+# Generate image
+image = apicenter.image(
+    provider="openai",
+    model="dall-e-3",
+    prompt="A beautiful sunset over mountains"
+)
+
+# Generate audio
+audio = apicenter.audio(
+    provider="elevenlabs",
+    model="eleven_multilingual_v2",
+    prompt="Hello! This is a test of text to speech."
+)
 ```
 
 ## Configuration
 
-APICenter requires a `credentials.json` file in your project root or specified via the `APICENTER_CREDENTIALS_PATH` environment variable.
+APICenter requires a `credentials.json` file with your API keys. You can place it in:
+- Project root directory
+- User's home directory under `.apicenter/`
+- Custom location specified by `APICENTER_CREDENTIALS_PATH` environment variable
 
-### Using credentials.json
-
-Create a `credentials.json` file in your project root:
-
+Example `credentials.json`:
 ```json
 {
     "modes": {
         "text": {
             "providers": {
                 "openai": {
-                    "providers": {
-                        "openai": {
-                            "api_key": "your-openai-api-key",
-                            "organization": "your-org-id"
-                        }
-                    }
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
                 },
                 "anthropic": {
-                    "providers": {
-                        "anthropic": {
-                            "api_key": "your-anthropic-api-key"
-                        }
-                    }
+                    "api_key": "your-anthropic-api-key"
                 }
             }
         },
         "image": {
             "providers": {
                 "openai": {
-                    "providers": {
-                        "openai": {
-                            "api_key": "your-openai-api-key",
-                            "organization": "your-org-id"
-                        }
-                    }
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
                 },
                 "stability": {
-                    "providers": {
-                        "stability": {
-                            "api_key": "your-stability-api-key"
-                        }
-                    }
+                    "api_key": "your-stability-api-key"
                 }
             }
         },
         "audio": {
             "providers": {
                 "elevenlabs": {
-                    "providers": {
-                        "elevenlabs": {
-                            "api_key": "your-elevenlabs-api-key"
-                        }
-                    }
+                    "api_key": "your-elevenlabs-api-key"
                 }
             }
         }
@@ -82,114 +95,54 @@ Create a `credentials.json` file in your project root:
 }
 ```
 
-### Custom Credentials Location
+## Universal API Pattern
 
-You can specify a custom location for your credentials file using the `APICENTER_CREDENTIALS_PATH` environment variable:
-
-```bash
-export APICENTER_CREDENTIALS_PATH=/path/to/your/credentials.json
+All APICenter calls follow the same pattern:
+```python
+apicenter.<mode>(
+    provider="provider_name",
+    model="model_name",
+    prompt="your prompt",
+    **kwargs  # Provider-specific parameters
+)
 ```
 
-## Usage
-
-APICenter provides a universal interface for all AI operations with three required parameters:
-- `provider`: The AI service provider (e.g., "openai", "anthropic", "elevenlabs")
-- `model`: The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229", "eleven_multilingual_v2")
+### Required Parameters
+- `provider`: The AI service provider (e.g., "openai", "anthropic")
+- `model`: The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229")
 - `prompt`: The input text for the AI operation
 
-Additional parameters can be passed as keyword arguments.
+### Optional Parameters
+Each provider supports additional parameters via `**kwargs`. See the [Provider Documentation](docs/providers.md) for details.
 
-### Text Generation
+## Examples
 
+See the [examples](examples/) directory for detailed examples:
+- [Basic Usage](examples/basic_usage.py)
+- [Advanced Usage](examples/advanced_usage.py)
+
+## Error Handling
+
+APICenter provides comprehensive error handling:
 ```python
-from apicenter import apicenter
-
-# Minimal call with OpenAI
-response = apicenter.text(
-    provider="openai",
-    model="gpt-4",
-    prompt="Give me a list of 5 animals."
-)
-
-# Detailed call with OpenAI
-response = apicenter.text(
-    provider="openai",
-    model="gpt-4",
-    prompt="Write a short story about a robot learning to paint.",
-    temperature=0.7,
-    max_tokens=1000,
-    top_p=0.9,
-    frequency_penalty=0.5,
-    presence_penalty=0.5
-)
+try:
+    response = apicenter.text(
+        provider="anthropic",
+        model="claude-3-sonnet-20240229",
+        prompt="Write a story"
+    )
+except ValueError as e:
+    print(f"Invalid parameters: {e}")
+except FileNotFoundError as e:
+    print(f"Configuration error: {e}")
+except Exception as e:
+    print(f"API error: {e}")
 ```
 
-### Image Generation
+## Contributing
 
-```python
-from apicenter import apicenter
-from PIL import Image
-
-# Minimal call with OpenAI DALL-E
-image = apicenter.image(
-    provider="openai",
-    model="dall-e-3",
-    prompt="A beautiful sunset over mountains"
-)
-
-# Detailed call with OpenAI DALL-E
-image = apicenter.image(
-    provider="openai",
-    model="dall-e-3",
-    prompt="A beautiful sunset over mountains, with snow-capped peaks and a clear lake reflection",
-    size="1024x1024",
-    quality="standard",
-    style="vivid"
-)
-```
-
-### Audio Generation
-
-```python
-from apicenter import apicenter
-
-# Minimal call with ElevenLabs
-audio = apicenter.audio(
-    provider="elevenlabs",
-    model="eleven_multilingual_v2",
-    prompt="This is a test of text to speech."
-)
-
-# Detailed call with ElevenLabs
-audio = apicenter.audio(
-    provider="elevenlabs",
-    model="eleven_multilingual_v2",
-    prompt="This is a test of text to speech with additional parameters.",
-    voice_id="JBFqnCBsd6RMkjVDRZzb",
-    output_format="mp3_44100_128",
-    stability=0.5,
-    similarity_boost=0.8,
-    style=0.5,
-    use_speaker_boost=True
-)
-```
-
-## Extending APICenter
-
-To add a new provider:
-
-1. Create a new provider class in the appropriate module under `providers/`
-2. Inherit from `BaseProvider`
-3. Implement the required methods: `validate_params()` and `call()`
-4. Add the provider to the `_providers` dictionary in the `APICenter` class
-
-To add a new mode:
-
-1. Create a new module under `providers/` for the mode's providers
-2. Implement the provider classes
-3. Add the mode and its providers to the `_providers` dictionary in the `APICenter` class
-4. Add a new method to the `APICenter` class to handle the mode
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to APICenter.
 
 ## License
 
-MIT License 
+MIT License - see [LICENSE](LICENSE) for details. 
