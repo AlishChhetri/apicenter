@@ -34,37 +34,21 @@ apicenter/
 ├── examples/           # Example code
 ├── tests/             # Test files
 ├── docs/              # Documentation
+│   ├── extending.md   # Guide for extending APICenter
+│   ├── modes/         # Mode-specific documentation
+│   └── providers/     # Provider-specific documentation
 └── pyproject.toml     # Project configuration
 ```
 
-## Adding a New Provider
+## Extending APICenter
 
-1. Create a new provider class in the appropriate module:
-```python
-from ..core.base import BaseProvider
+For detailed instructions on extending APICenter with new modes and providers, see [Extending APICenter](docs/extending.md). This guide covers:
 
-class NewProvider(BaseProvider[str]):
-    def _get_mode(self) -> str:
-        return "text"  # or "image" or "audio"
-    
-    def validate_params(self) -> None:
-        # Validate provider-specific parameters
-        pass
-    
-    def call(self) -> str:
-        # Make the API call
-        pass
-```
-
-2. Add the provider to the `_providers` dictionary in `apicenter.py`:
-```python
-self._providers = {
-    "text": {
-        "new_provider": NewProvider,
-        # ... other providers
-    }
-}
-```
+- Adding new modes (e.g., video generation)
+- Adding new providers to existing modes
+- Provider implementation guidelines
+- Best practices for implementation
+- Complete examples
 
 ## Testing
 
@@ -97,7 +81,8 @@ poetry run pytest
 1. Update the README.md if adding new features
 2. Add docstrings to new functions and classes
 3. Update examples if needed
-4. Add provider-specific documentation in docs/providers.md
+4. Add provider-specific documentation in docs/providers/
+5. Add mode-specific documentation in docs/modes/
 
 ## Pull Request Process
 
