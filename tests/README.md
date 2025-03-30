@@ -26,6 +26,21 @@ You can also run individual test files directly:
 python -m unittest tests/test_apicenter.py
 ```
 
+## Ollama Tests in CI Environments
+
+Tests that require Ollama are automatically skipped in CI environments since Ollama is a local solution that cannot be easily installed in GitHub Actions or other CI systems. These tests include:
+
+- `test_ollama_error_handling` in `test_error_handling.py`
+- `test_call_ollama_with_options` in `test_text_ollama.py`
+- `test_call_ollama_with_system_message` in `test_text_ollama.py`
+
+When running tests locally with Ollama installed, all tests will be executed. To run Ollama tests locally:
+
+1. Install Ollama from [ollama.ai](https://ollama.ai/)
+2. Pull a test model: `ollama pull llama2`
+3. Start the Ollama service
+4. Run the tests normally
+
 ## Test Structure
 
 The test suite is organized as follows:

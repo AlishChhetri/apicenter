@@ -341,6 +341,15 @@ You can also run individual test files directly:
 python -m unittest tests/test_apicenter.py
 ```
 
+### Testing with Ollama
+
+Ollama tests require a local Ollama installation and are skipped in CI environments. To run these tests locally:
+
+1. Install Ollama from [ollama.ai](https://ollama.ai/)
+2. Pull the test model: `ollama pull llama2`
+3. Start the Ollama service
+4. Run the tests as normal
+
 ### Test Coverage
 
 For developers contributing to the project, we aim to maintain high test coverage. You can generate a coverage report by installing the coverage package and running the tests with the `--coverage` flag:
