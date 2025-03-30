@@ -14,6 +14,7 @@ This guide explains how to configure APICenter for use with various AI providers
   - [ElevenLabs](#elevenlabs)
   - [Ollama](#ollama)
 - [Environment Variables](#environment-variables)
+- [Prompt Format Configuration](#prompt-format-configuration)
 - [Using Multiple Configurations](#using-multiple-configurations)
 - [Securing Your Credentials](#securing-your-credentials)
 - [Troubleshooting](#troubleshooting)
@@ -143,6 +144,27 @@ APICenter supports the following environment variables:
 - `APICENTER_CREDENTIALS_PATH`: Path to credentials file
 - `OLLAMA_HOST`: Host for Ollama API (default: `http://localhost:11434`)
 
+## Prompt Format Configuration
+
+APICenter provides a flexible interface for passing prompts to different providers:
+
+- **String Prompts**: The simplest form, accepted by all providers
+  ```python
+  prompt="A simple text prompt"
+  ```
+
+- **Message Lists**: For chat-based models, allowing for multi-turn conversations
+  ```python
+  prompt=[
+      {"role": "system", "content": "You are a helpful assistant"},
+      {"role": "user", "content": "Hello, how are you?"}
+  ]
+  ```
+
+- **Other Structured Inputs**: Some providers may accept other specialized formats
+
+APICenter automatically handles the conversion between formats as needed for each provider.
+
 ## Using Multiple Configurations
 
 You can maintain multiple configuration files for different projects or environments:
@@ -162,6 +184,17 @@ To keep your API keys secure:
 2. Add credentials.json to your .gitignore file
 3. Consider using environment variables or a secret management system for production use
 4. Set appropriate file permissions (e.g., `chmod 600 credentials.json`)
+
+APICenter ships with a recommended .gitignore entry that includes:
+```
+# Credentials and sensitive data
+credentials.json
+*credentials*.json
+*.key
+*.pem
+*.env
+secrets/
+```
 
 ## Troubleshooting
 

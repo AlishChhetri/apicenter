@@ -41,18 +41,21 @@ For the most up-to-date list, see the [OpenAI Models documentation](https://plat
 ```python
 from apicenter import apicenter
 
-# Using GPT-4
+# Using GPT-4 with a simple string prompt
 response = apicenter.text(
     provider="openai",
     model="gpt-4",
     prompt="Explain how quantum computing differs from classical computing"
 )
 
-# Using GPT-3.5 Turbo
+# Using GPT-3.5 Turbo with a message list for chat
 response = apicenter.text(
     provider="openai",
     model="gpt-3.5-turbo",
-    prompt="Write a short poem about technology"
+    prompt=[
+        {"role": "system", "content": "You are a creative assistant."},
+        {"role": "user", "content": "Write a short poem about technology"}
+    ]
 )
 ```
 
@@ -72,18 +75,21 @@ For the most up-to-date list, see the [Anthropic models documentation](https://d
 ```python
 from apicenter import apicenter
 
-# Using Claude 3 Opus
+# Using Claude 3 Opus with a string prompt
 response = apicenter.text(
     provider="anthropic",
     model="claude-3-opus-20240229",
     prompt="Analyze the ethical implications of artificial general intelligence"
 )
 
-# Using Claude 3 Haiku
+# Using Claude 3 Haiku with a message list
 response = apicenter.text(
     provider="anthropic",
     model="claude-3-haiku-20240307",
-    prompt="Summarize the benefits of renewable energy"
+    prompt=[
+        {"role": "system", "content": "You are a concise assistant that provides clear explanations."},
+        {"role": "user", "content": "Summarize the benefits of renewable energy"}
+    ]
 )
 ```
 
@@ -109,18 +115,21 @@ For a complete list of available models, run `ollama list` after installing Olla
 ```python
 from apicenter import apicenter
 
-# Using Llama 2
+# Using Llama 2 with string prompt
 response = apicenter.text(
     provider="ollama",
     model="llama2",
     prompt="Write a function in Python to find the greatest common divisor of two numbers"
 )
 
-# Using Mistral
+# Using Mistral with a chat message list
 response = apicenter.text(
     provider="ollama",
     model="mistral",
-    prompt="Explain the concept of recursion"
+    prompt=[
+        {"role": "system", "content": "You are a programming instructor."},
+        {"role": "user", "content": "Explain the concept of recursion"}
+    ]
 )
 ```
 
@@ -135,12 +144,15 @@ response = apicenter.text(
 
 For the most up-to-date information, see the [OpenAI DALL-E documentation](https://platform.openai.com/docs/guides/images).
 
+**Note:** The OpenAI DALL-E provider returns a single URL string pointing to the generated image.
+
 #### Example
 
 ```python
 from apicenter import apicenter
+import requests
 
-# Using DALL-E 3
+# Using DALL-E 3 (returns a single URL string)
 image_url = apicenter.image(
     provider="openai",
     model="dall-e-3",
@@ -148,6 +160,11 @@ image_url = apicenter.image(
     size="1024x1024",
     quality="hd"
 )
+
+# Download the image
+response = requests.get(image_url)
+with open("dalle_image.png", "wb") as f:
+    f.write(response.content)
 ```
 
 ### Stability AI Models
@@ -160,12 +177,14 @@ image_url = apicenter.image(
 
 For the most up-to-date information, see the [Stability AI documentation](https://platform.stability.ai/docs/api/generation).
 
+**Note:** The Stability AI provider returns image data as bytes directly, ready to be saved to a file.
+
 #### Example
 
 ```python
 from apicenter import apicenter
 
-# Using Stable Diffusion XL
+# Using Stable Diffusion XL (returns image bytes directly)
 image_bytes = apicenter.image(
     provider="stability",
     model="stable-diffusion-xl-1024-v1-0",
@@ -173,6 +192,10 @@ image_bytes = apicenter.image(
     steps=50,
     cfg_scale=7.0
 )
+
+# Save image bytes to file
+with open("stability_image.png", "wb") as f:
+    f.write(image_bytes)
 ```
 
 ## Audio Generation Models
@@ -199,6 +222,10 @@ audio_bytes = apicenter.audio(
     prompt="Hello, welcome to the world of artificial intelligence and text-to-speech technology.",
     voice_id="Rachel"
 )
+
+# Save audio bytes to file
+with open("speech.mp3", "wb") as f:
+    f.write(audio_bytes)
 ```
 
 ## Model Selection Guidelines
@@ -229,5 +256,10 @@ When choosing a model, consider these factors:
    - Image understanding: GPT-4 Vision
    - Code generation: Codellama, Wizardcoder
    - Multi-language audio: eleven_multilingual_v2
+
+7. **Input Format Flexibility**:
+   - All APICenter providers support string prompts
+   - Chat functionality: Use message lists for conversation history
+   - Provider-specific formats: Check documentation for advanced usage
 
 Always check the provider's documentation for the most up-to-date model capabilities and recommendations. 

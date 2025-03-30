@@ -69,7 +69,7 @@ from apicenter import apicenter
 response = apicenter.<mode>(
     provider="<provider_name>",
     model="<model_name>",
-    prompt="<your_prompt>",
+    prompt="<your_prompt>",  # Can be a string or structured input like a list
     **kwargs  # Additional provider-specific parameters
 )
 ```
@@ -107,7 +107,7 @@ print(response)
 ### Image Generation
 
 ```python
-# OpenAI DALL-E
+# OpenAI DALL-E (returns a single URL string)
 image_url = apicenter.image(
     provider="openai",
     model="dall-e-3",

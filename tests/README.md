@@ -36,10 +36,10 @@ The test suite is organized as follows:
 
 ### Provider Tests
 
-- `test_text_openai.py`: Tests for OpenAI text provider
-- `test_text_anthropic.py`: Tests for Anthropic text provider
+- `test_text_openai.py`: Tests for OpenAI text provider (includes different prompt formats)
+- `test_text_anthropic.py`: Tests for Anthropic text provider (includes different prompt formats)
 - `test_text_ollama.py`: Tests for Ollama text provider
-- `test_image_openai.py`: Tests for OpenAI image provider
+- `test_image_openai.py`: Tests for OpenAI image provider (returns single URL string)
 - `test_image_stability.py`: Tests for Stability AI image provider
 - `test_audio_elevenlabs.py`: Tests for ElevenLabs audio provider
 
@@ -50,6 +50,12 @@ The test suite is organized as follows:
 ### Error Handling Tests
 
 - `test_error_handling.py`: Tests for error handling in various scenarios
+
+## Implementation Notes
+
+- The prompt parameter for all providers accepts flexible types (`Any`), allowing for string prompts, lists, or other structures as needed.
+- OpenAI DALL-E image provider returns a single URL string rather than a list of URLs.
+- All provider functions are designed to handle various input formats appropriate for that specific provider.
 
 ## Mock Testing
 

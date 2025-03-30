@@ -13,6 +13,7 @@ This document provides information about the various providers supported by APIC
   - [Stability AI](#stability-ai)
 - [Audio Generation Providers](#audio-generation-providers)
   - [ElevenLabs](#elevenlabs)
+- [Input and Output Formats](#input-and-output-formats)
 
 ## Text Generation Providers
 
@@ -40,10 +41,23 @@ For the most up-to-date information, refer to the [OpenAI API Documentation](htt
 ```python
 from apicenter import apicenter
 
+# Simple string input
 response = apicenter.text(
     provider="openai",
     model="gpt-4",
     prompt="Explain the concept of recursion in programming",
+    temperature=0.7,
+    max_tokens=300
+)
+
+# Chat message list input
+response = apicenter.text(
+    provider="openai",
+    model="gpt-4",
+    prompt=[
+        {"role": "system", "content": "You are a programming tutor."},
+        {"role": "user", "content": "Explain the concept of recursion in programming"}
+    ],
     temperature=0.7,
     max_tokens=300
 )
@@ -73,10 +87,23 @@ For the most up-to-date information, refer to the [Anthropic API Documentation](
 ```python
 from apicenter import apicenter
 
+# Simple string input
 response = apicenter.text(
     provider="anthropic",
     model="claude-3-sonnet-20240229",
     prompt="What are the ethical considerations in artificial intelligence?",
+    temperature=0.5,
+    max_tokens=1000
+)
+
+# Chat message list input
+response = apicenter.text(
+    provider="anthropic",
+    model="claude-3-sonnet-20240229",
+    prompt=[
+        {"role": "system", "content": "You are an ethics professor."},
+        {"role": "user", "content": "What are the ethical considerations in artificial intelligence?"}
+    ],
     temperature=0.5,
     max_tokens=1000
 )
@@ -116,10 +143,23 @@ For the most up-to-date information, refer to the [Ollama GitHub repository](htt
 ```python
 from apicenter import apicenter
 
+# Simple string input
 response = apicenter.text(
     provider="ollama",
     model="llama2",
     prompt="Generate a recursive function in Python to calculate Fibonacci numbers",
+    temperature=0.7,
+    num_predict=300
+)
+
+# Chat message list input
+response = apicenter.text(
+    provider="ollama",
+    model="llama2",
+    prompt=[
+        {"role": "system", "content": "You are a programming expert."},
+        {"role": "user", "content": "Generate a recursive function in Python to calculate Fibonacci numbers"}
+    ],
     temperature=0.7,
     num_predict=300
 )
@@ -140,6 +180,10 @@ OpenAI's DALL-E models generate images from text descriptions.
 
 Uses the same API key as OpenAI's text models.
 
+#### Return Format
+
+The OpenAI DALL-E provider returns a single URL string pointing to the generated image.
+
 #### API Documentation
 
 For the most up-to-date information, refer to the [OpenAI Images API Documentation](https://platform.openai.com/docs/api-reference/images).
@@ -148,7 +192,9 @@ For the most up-to-date information, refer to the [OpenAI Images API Documentati
 
 ```python
 from apicenter import apicenter
+import requests
 
+# Generate image (returns a URL string)
 image_url = apicenter.image(
     provider="openai",
     model="dall-e-3",
@@ -157,6 +203,11 @@ image_url = apicenter.image(
     quality="hd",
     style="vivid"
 )
+
+# Download the image
+response = requests.get(image_url)
+with open("future_city.png", "wb") as f:
+    f.write(response.content)
 ```
 
 ### Stability AI
@@ -173,6 +224,10 @@ Stability AI provides state-of-the-art image generation models.
 
 Requires an API key from Stability AI, which can be obtained from the [Stability AI platform](https://platform.stability.ai/).
 
+#### Return Format
+
+The Stability AI provider returns image data as bytes directly, ready to be saved to a file.
+
 #### API Documentation
 
 For the most up-to-date information, refer to the [Stability AI API Documentation](https://platform.stability.ai/docs/api/generation).
@@ -182,6 +237,7 @@ For the most up-to-date information, refer to the [Stability AI API Documentatio
 ```python
 from apicenter import apicenter
 
+# Generate image (returns image bytes directly)
 image_bytes = apicenter.image(
     provider="stability",
     model="stable-diffusion-xl-1024-v1-0",
@@ -213,6 +269,10 @@ ElevenLabs provides high-quality text-to-speech models with various voices.
 
 Requires an API key from ElevenLabs, which can be obtained from the [ElevenLabs website](https://elevenlabs.io/).
 
+#### Return Format
+
+The ElevenLabs provider returns audio data as bytes, which can be saved directly to an audio file.
+
 #### API Documentation
 
 For the most up-to-date information, refer to the [ElevenLabs API Documentation](https://docs.elevenlabs.io/api-reference).
@@ -222,6 +282,7 @@ For the most up-to-date information, refer to the [ElevenLabs API Documentation]
 ```python
 from apicenter import apicenter
 
+# Generate audio (returns audio bytes)
 audio_bytes = apicenter.audio(
     provider="elevenlabs",
     model="eleven_multilingual_v2",
@@ -235,6 +296,33 @@ audio_bytes = apicenter.audio(
 with open("speech.mp3", "wb") as f:
     f.write(audio_bytes)
 ```
+
+## Input and Output Formats
+
+### Input Formats
+
+APICenter provides a flexible interface for different types of input formats:
+
+- **Text Generation**:
+  - String prompts: Simple text queries (`"Tell me about quantum physics"`)
+  - Message lists: Structured chat conversations with roles (`[{"role": "system", "content": "..."}, ...]`)
+
+- **Image Generation**:
+  - String prompts: Text descriptions of the desired image (`"A cat wearing a space suit"`)
+
+- **Audio Generation**:
+  - String prompts: Text to be converted to speech (`"Hello, this is a test"`)
+
+### Output Formats
+
+Each provider returns a specific output format:
+
+- **Text Generation**: All text providers return a string containing the generated text.
+- **Image Generation**:
+  - OpenAI: Returns a single URL string pointing to the generated image.
+  - Stability AI: Returns the image data as bytes directly.
+- **Audio Generation**:
+  - ElevenLabs: Returns the audio data as bytes.
 
 ## Adding New Providers
 

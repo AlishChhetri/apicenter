@@ -12,7 +12,7 @@ from apicenter import apicenter
 response = apicenter.<mode>(
     provider="<provider_name>",
     model="<model_name>",
-    prompt="<your_prompt>",
+    prompt="<your_prompt>",  # Can be a string, list, or other structured input
     **kwargs  # Additional provider-specific parameters
 )
 ```
@@ -21,7 +21,7 @@ Where:
 - `mode` is one of: `text`, `image`, or `audio`
 - `provider` is the AI service provider (e.g., "openai", "anthropic", "stability")
 - `model` is the specific model to use (varies by provider)
-- `prompt` is the input text (or message list for chat models)
+- `prompt` is the input (string, message list, or other formats depending on the provider)
 - `**kwargs` allows passing provider-specific parameters
 
 ## Text Generation
@@ -133,7 +133,8 @@ image_url = apicenter.image(
 #### OpenAI (DALL-E)
 
 ```python
-image = apicenter.image(
+# Returns a single URL string
+image_url = apicenter.image(
     provider="openai",
     model="dall-e-3",  # or dall-e-2
     prompt="A beautiful sunset over mountains",
