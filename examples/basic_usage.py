@@ -34,7 +34,7 @@ def text_examples():
         print("\nTrying Ollama (requires local installation)...")
         response = apicenter.text(
             provider="ollama",
-            model="llama2", # or another model you've pulled locally
+            model="deepseek-r1", # or another model you've pulled locally
             prompt="What is the capital of France?"
         )
         print("\nOllama Response:")
@@ -42,7 +42,7 @@ def text_examples():
     except Exception as e:
         print(f"\nError with Ollama: {e}")
         print("Note: Ollama requires a local installation with models downloaded.")
-        print("Install Ollama and pull a model with: 'ollama pull llama2'")
+        print("Install Ollama and pull a model with: 'ollama pull deepseek-r1'")
 
 def image_examples():
     """Examples of image generation with different providers."""

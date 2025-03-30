@@ -63,7 +63,7 @@ def advanced_text_generation():
     try:
         response = apicenter.text(
             provider="ollama",
-            model="llama2", # or another model you've pulled locally
+            model="deepseek-r1", # or another model you've pulled locally
             prompt="Write a short poem about artificial intelligence",
             temperature=0.8,
             num_predict=300,

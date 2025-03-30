@@ -20,29 +20,29 @@ def basic_examples():
     """Basic text generation examples."""
     print("\n=== BASIC TEXT GENERATION EXAMPLES ===")
     
-    # # OpenAI example
-    # try:
-    #     response = apicenter.text(
-    #         provider="openai",
-    #         model="gpt-3.5-turbo",
-    #         prompt="Explain what a neural network is in one paragraph."
-    #     )
-    #     print("\nOpenAI Basic Response:")
-    #     print(response)
-    # except Exception as e:
-    #     print(f"\nError with OpenAI: {e}")
+    # OpenAI example
+    try:
+        response = apicenter.text(
+            provider="openai",
+            model="gpt-3.5-turbo",
+            prompt="Explain what a neural network is in one paragraph."
+        )
+        print("\nOpenAI Basic Response:")
+        print(response)
+    except Exception as e:
+        print(f"\nError with OpenAI: {e}")
     
-    # # Anthropic example
-    # try:
-    #     response = apicenter.text(
-    #         provider="anthropic",
-    #         model="claude-3-haiku-20240307",
-    #         prompt="List 5 interesting facts about dolphins."
-    #     )
-    #     print("\nAnthropic Basic Response:")
-    #     print(response)
-    # except Exception as e:
-    #     print(f"\nError with Anthropic: {e}")
+    # Anthropic example
+    try:
+        response = apicenter.text(
+            provider="anthropic",
+            model="claude-3-haiku-20240307",
+            prompt="List 5 interesting facts about dolphins."
+        )
+        print("\nAnthropic Basic Response:")
+        print(response)
+    except Exception as e:
+        print(f"\nError with Anthropic: {e}")
     
     # Ollama example (local model)
     try:
@@ -194,9 +194,9 @@ def main():
     
     # Run examples
     basic_examples()
-    # chat_conversation_example()
-    # ollama_examples()
-    # structured_output_example()
+    chat_conversation_example()
+    ollama_examples()
+    structured_output_example()
     
     print("\nAll LLM examples completed!")
 

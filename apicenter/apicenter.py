@@ -55,7 +55,7 @@ class APICenter:
         
         Args:
             provider: The AI service provider (e.g., "openai", "anthropic", "ollama")
-            model: The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229", "llama2")
+            model: The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229", "deepseek-r1")
             prompt: The input text or message list for the AI operation
             **kwargs: Any additional parameters specific to the provider and model
             
