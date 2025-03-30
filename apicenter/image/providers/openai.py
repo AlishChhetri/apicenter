@@ -18,6 +18,7 @@ def call_openai(model, prompt, credentials, **kwargs):
 
     # Return URLs by default or image data if requested
     if not want_bytes:
-        return [img.url for img in response.data]
+        # Return just the first URL as a string instead of a list to avoid "write() argument must be str, not list" error
+        return response.data[0].url
     else:
         return [base64.b64decode(img.b64_json) for img in response.data][0]

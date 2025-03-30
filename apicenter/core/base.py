@@ -25,7 +25,7 @@ class BaseProvider(ABC, Generic[T]):
         self,
         provider: str,
         model: str,
-        prompt: Union[str, List[Dict[str, str]]],
+        prompt: Any,
         **kwargs: Any
     ) -> None:
         """Initialize a provider with model, prompt and additional parameters."""

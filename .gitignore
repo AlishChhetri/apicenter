@@ -164,16 +164,39 @@ cython_debug/
 
 # apicenter
 
-# credentials
-
+# Credentials and sensitive data
 credentials.json
+*credentials*.json
+*.key
+*.pem
+*.env
+secrets/
 
-# outputs
-
+# Test and example outputs
 output/
 outputs/
+*/outputs/
 examples/outputs/
 example_outputs/
+*_output*/
 tests/coverage_html/
+
+# Generated files
+generated/
+*.generated.*
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Logs
+logs/
+*.log
+
+# Cache directories
+.cache/
+*/.cache/
+__pycache__/
 
 

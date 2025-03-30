@@ -3,7 +3,7 @@
 from anthropic import Anthropic
 from typing import Dict, Any, Union, List
 
-def call_anthropic(model: str, prompt: Union[str, List[Dict[str, str]]], credentials: Dict[str, Any], **kwargs: Any) -> str:
+def call_anthropic(model: str, prompt: Any, credentials: Dict[str, Any], **kwargs: Any) -> str:
     """Handle text generation requests through Anthropic's Claude API."""
     try:
         # Initialize Anthropic client

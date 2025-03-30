@@ -69,7 +69,7 @@ class ImageProvider(BaseProvider[Union[str, bytes, List[str]]]):
         )
 
 
-def image(provider: str, model: str, prompt: str, **kwargs: Any) -> Union[str, bytes, List[str]]:
+def image(provider: str, model: str, prompt: Any, **kwargs: Any) -> Union[str, bytes, List[str]]:
     """Generate images using any supported AI provider with a unified interface."""
     # Create provider instance and get response
     return ImageProvider(provider, model, prompt, **kwargs).get_response()

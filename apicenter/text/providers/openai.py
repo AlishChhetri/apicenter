@@ -3,7 +3,7 @@
 from openai import OpenAI
 from typing import Dict, Any, Union, List
 
-def call_openai(model: str, prompt: Union[str, List[Dict[str, str]]], credentials: Dict[str, Any], **kwargs: Any) -> str:
+def call_openai(model: str, prompt: Any, credentials: Dict[str, Any], **kwargs: Any) -> str:
     """Handle text generation requests through OpenAI's API."""
     try:
         # Format prompt as messages if it's a simple string

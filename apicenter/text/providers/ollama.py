@@ -4,7 +4,7 @@ import ollama
 from typing import Dict, Any, List, Union
 import os
 
-def call_ollama(model: str, prompt: Union[str, List[Dict[str, str]]], **kwargs: Any) -> str:
+def call_ollama(model: str, prompt: Any, **kwargs: Any) -> str:
     """Handle text generation requests through locally running Ollama models."""
     try:
         # Configure Ollama host from environment or use default

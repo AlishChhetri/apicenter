@@ -48,7 +48,7 @@ class AudioProvider(BaseProvider[bytes]):
         )
 
 
-def audio(provider: str, model: str, prompt: str, **kwargs: Any) -> bytes:
+def audio(provider: str, model: str, prompt: Any, **kwargs: Any) -> bytes:
     """Generate audio using any supported AI provider with a unified interface."""
     # Create provider instance and get response
     return AudioProvider(provider, model, prompt, **kwargs).get_response()

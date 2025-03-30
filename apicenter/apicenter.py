@@ -44,7 +44,7 @@ class APICenter:
         self,
         provider: str,
         model: str,
-        prompt: Union[str, List[Dict[str, str]]],
+        prompt: Any,
         **kwargs: Any
     ) -> str:
         """Generate text using the specified AI provider and model."""
@@ -56,7 +56,7 @@ class APICenter:
         self,
         provider: str,
         model: str,
-        prompt: str,
+        prompt: Any,
         **kwargs: Any
     ) -> Union[str, bytes, List[str]]:
         """Generate an image using the specified AI provider and model."""
@@ -68,7 +68,7 @@ class APICenter:
         self,
         provider: str,
         model: str,
-        prompt: str,
+        prompt: Any,
         **kwargs: Any
     ) -> bytes:
         """Generate audio using the specified AI provider and model."""

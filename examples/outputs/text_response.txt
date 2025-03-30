@@ -1,8 +1,9 @@
 {
-  "name": "Elena Jones",
-  "age": 28,
-  "occupation": "Graphic Designer",
-  "hobbies": ["painting", "reading", "traveling"],
-  "personality_traits": ["creative", "curious", "easygoing"],
-  "location": "New York City"
+  "name": "Elena Rodriguez",
+  "age": 32,
+  "occupation": "Software Engineer",
+  "hobbies": ["painting", "hiking", "reading"],
+  "location": "San Francisco, CA",
+  "personality": "friendly and outgoing",
+  "family_status": "married with two children"
 }

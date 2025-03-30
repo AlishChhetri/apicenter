@@ -81,7 +81,7 @@ class TextProvider(BaseProvider[str]):
         )
 
 
-def text(provider: str, model: str, prompt: Union[str, List[Dict[str, str]]], **kwargs: Any) -> str:
+def text(provider: str, model: str, prompt: Any, **kwargs: Any) -> str:
     """Generate text using any supported AI provider with a unified interface."""
     # Create provider instance and get response
     return TextProvider(provider, model, prompt, **kwargs).get_response()
