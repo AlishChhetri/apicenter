@@ -12,6 +12,18 @@ The `apicenter` object is the main entry point for all API functions.
 from apicenter import apicenter
 ```
 
+## Universal Parameter Handling
+
+One of APICenter's core features is universal parameter handling through `**kwargs`. This means you can pass any parameters supported by the underlying provider's API directly in your function call, and APICenter will handle the routing correctly.
+
+Each provider implementation includes intelligent handling of parameters, including:
+
+- **Automatic parameter routing**: Parameters are routed to their correct destination (e.g., stability parameters for ElevenLabs, options dictionary for Ollama)
+- **Default values**: Sensible defaults are provided for required parameters
+- **Provider-specific structures**: Parameters are converted to the structure expected by each provider
+
+This flexibility means you don't need to learn different parameter structures for each provider - simply pass parameters according to the provider's API documentation, and APICenter takes care of the rest.
+
 ## Text Generation
 
 Generate text with AI models from various providers.
@@ -33,6 +45,29 @@ apicenter.text(
 | `model` | `str` | The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229") |
 | `prompt` | `str` or `List[Dict[str, str]]` | Either a string prompt or a list of message dictionaries |
 | `**kwargs` | Any | Additional provider-specific parameters |
+
+### Improved System Prompt Support
+
+APICenter now provides universal support for system prompts across all text providers, allowing you to use the same messaging format regardless of which provider you're using.
+
+When you provide a list of message dictionaries with a "system" role message, APICenter will:
+
+- For OpenAI: Pass the system message directly as part of the messages list
+- For Anthropic: Extract the system message and pass it as a separate `system` parameter
+- For Ollama: Properly handle the system message based on model capabilities
+
+This means you can write code like this and it will work with any provider:
+
+```python
+response = apicenter.text(
+    provider="any_provider",  # openai, anthropic, ollama, etc.
+    model="model_name",
+    prompt=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Your question here"}
+    ]
+)
+```
 
 ### Supported Providers
 
@@ -71,6 +106,60 @@ response = apicenter.text(
     model="llama2",
     prompt="Write a poem about artificial intelligence.",
     temperature=0.7
+)
+```
+
+### Provider-Specific Message Formats
+
+APICenter is designed to handle different message formats properly for each provider:
+
+#### OpenAI
+
+With OpenAI, you can use the standard format with "system", "user", and "assistant" roles:
+
+```python
+response = apicenter.text(
+    provider="openai",
+    model="gpt-4",
+    prompt=[
+        {"role": "system", "content": "You are a helpful assistant specialized in science."},
+        {"role": "user", "content": "Explain black holes."},
+        {"role": "assistant", "content": "Black holes are regions of spacetime..."},
+        {"role": "user", "content": "What happens if you fall into one?"}
+    ]
+)
+```
+
+#### Anthropic
+
+For Anthropic models, system prompts are automatically extracted and handled correctly:
+
+```python
+response = apicenter.text(
+    provider="anthropic",
+    model="claude-3-sonnet-20240229",
+    prompt=[
+        {"role": "system", "content": "You are a helpful assistant that explains complex topics simply."},
+        {"role": "user", "content": "Explain quantum computing to me like I'm 10 years old."}
+    ],
+    temperature=0.3,
+    max_tokens=800
+)
+```
+
+#### Ollama
+
+For Ollama local models, you can use a simplified format:
+
+```python
+response = apicenter.text(
+    provider="ollama",
+    model="llama2",
+    prompt=[
+        {"role": "user", "content": "What are the three laws of robotics?"},
+        {"role": "assistant", "content": "The three laws are..."},
+        {"role": "user", "content": "Who created these laws?"}
+    ]
 )
 ```
 
@@ -133,7 +222,8 @@ image_bytes = apicenter.image(
     model="stable-diffusion-xl-1024-v1-0",
     prompt="A fantasy landscape with dragons and castles",
     steps=50,
-    cfg_scale=7.0
+    cfg_scale=7.0,
+    negative_prompt="ugly, blurry, low quality"
 )
 
 with open("fantasy_landscape.png", "wb") as f:
@@ -177,8 +267,9 @@ audio_bytes = apicenter.audio(
     model="eleven_multilingual_v2",
     prompt="Hello world! This is a text-to-speech demonstration.",
     voice_id="Rachel",
-    stability=0.5,
-    similarity_boost=0.75
+    stability=0.5,  # Voice settings parameter
+    similarity_boost=0.75,  # Voice settings parameter
+    output_format="mp3_44100_128"
 )
 
 # Save audio to file
@@ -230,6 +321,7 @@ APICenter is designed to be flexible, allowing you to pass any parameters suppor
 | `cfg_scale` | `float` | How closely to follow the prompt (0-35) |
 | `width` | `int` | Image width (multiple of 64) |
 | `height` | `int` | Image height (multiple of 64) |
+| `negative_prompt` | `str` | Text prompts to avoid in the generation |
 
 ### ElevenLabs Parameters
 
@@ -238,5 +330,6 @@ APICenter is designed to be flexible, allowing you to pass any parameters suppor
 | `voice_id` | `str` | Voice to use |
 | `stability` | `float` | Voice stability (0.0-1.0) |
 | `similarity_boost` | `float` | Voice similarity boost (0.0-1.0) |
+| `output_format` | `str` | Audio format (e.g., "mp3_44100_128") |
 
 The flexibility of APICenter's design means you can pass any parameter supported by the underlying provider's API without needing to update the library. For a complete list of available parameters for each provider, refer to their official API documentation. 

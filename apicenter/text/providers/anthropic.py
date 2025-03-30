@@ -23,19 +23,37 @@ def call_anthropic(model: str, prompt: Union[str, List[Dict[str, str]]], credent
         # Default max_tokens if not provided
         max_tokens = kwargs.pop("max_tokens", 4096)
         
-        # Convert simple string prompt to messages format if needed
+        # Extract system prompt and prepare messages
+        system_prompt = None
         if isinstance(prompt, str):
             messages = [{"role": "user", "content": prompt}]
         else:
-            messages = prompt
+            # Check if there's a system message in the prompt list
+            messages = []
+            for msg in prompt:
+                if msg.get("role") == "system":
+                    system_prompt = msg.get("content")
+                else:
+                    messages.append(msg)
+            
+            # If no messages left (only system messages), add a default user message
+            if not messages:
+                messages = [{"role": "user", "content": "Hello"}]
+        
+        # Prepare API parameters
+        api_params = {
+            "model": model,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            **kwargs
+        }
+        
+        # Add system parameter if present
+        if system_prompt:
+            api_params["system"] = system_prompt
         
         # Call the API
-        response = client.messages.create(
-            model=model,
-            messages=messages,
-            max_tokens=max_tokens,
-            **kwargs
-        )
+        response = client.messages.create(**api_params)
         
         return response.content[0].text
     except Exception as e:

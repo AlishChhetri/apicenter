@@ -238,6 +238,47 @@ follow_up = apicenter.text(
 print(follow_up)
 ```
 
+#### Advanced Chat with System Prompts
+
+APICenter automatically handles the different message formats for each provider. You can use standard chat format with system prompts for all providers:
+
+```python
+# OpenAI with system prompt
+response = apicenter.text(
+    provider="openai",
+    model="gpt-4",
+    prompt=[
+        {"role": "system", "content": "You are a helpful assistant specialized in science."},
+        {"role": "user", "content": "Explain the theory of relativity in simple terms."}
+    ],
+    temperature=0.7
+)
+
+# Anthropic with system prompt (automatically handled correctly)
+response = apicenter.text(
+    provider="anthropic",
+    model="claude-3-sonnet-20240229",
+    prompt=[
+        {"role": "system", "content": "You are a helpful assistant that explains complex topics simply."},
+        {"role": "user", "content": "Explain quantum computing to me like I'm 10 years old."}
+    ],
+    temperature=0.3,
+    max_tokens=800
+)
+
+# Ollama with conversation history
+response = apicenter.text(
+    provider="ollama",
+    model="llama2",
+    prompt=[
+        {"role": "system", "content": "You are a friendly AI assistant."},
+        {"role": "user", "content": "What are the three laws of robotics?"},
+        {"role": "assistant", "content": "The three laws are..."},
+        {"role": "user", "content": "Who created these laws?"}
+    ]
+)
+```
+
 ### Provider-Specific Parameters
 
 Pass any provider-specific parameters directly using kwargs:

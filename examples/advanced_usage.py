@@ -65,8 +65,8 @@ def advanced_text_generation():
             provider="ollama",
             model="deepseek-r1", # or another model you've pulled locally
             prompt="Write a short poem about artificial intelligence",
-            temperature=0.8,
-            num_predict=300,
+            temperature=0.8,      # Will be passed through options parameter
+            num_predict=300,      # Will be passed through options parameter
         )
         print("\nOllama Advanced Response:")
         print(response)
@@ -80,42 +80,41 @@ def advanced_image_generation():
 
     # OpenAI DALL-E with specific parameters
     try:
-        image_url = apicenter.image(
+        response = apicenter.image(
             provider="openai",
             model="dall-e-3",
-            prompt="A photorealistic image of a futuristic city with flying cars and vertical gardens",
+            prompt="A detailed steampunk cityscape with flying airships and clockwork machines",
             size="1024x1024",
             quality="hd",
-            style="natural",
+            style="vivid",
         )
         print("\nOpenAI DALL-E Advanced Response (URL):")
-        print(image_url)
-        
-        # Example of saving image URL to a file
+        print(response)
         print("You can download this image from the URL and save it locally if needed.")
     except Exception as e:
-        print(f"\nError with OpenAI image: {e}")
+        print(f"\nError with OpenAI DALL-E: {e}")
 
     # Stability AI with specific parameters
     try:
-        image_data = apicenter.image(
+        response = apicenter.image(
             provider="stability",
             model="stable-diffusion-xl-1024-v1-0",
-            prompt="An oil painting of a peaceful mountain landscape at sunset",
-            steps=50,
-            cfg_scale=7.5,
-            width=1024,
+            prompt="A photorealistic portrait of a Viking warrior with detailed armor and weapons",
             height=1024,
+            width=1024,
+            steps=50,
+            cfg_scale=7.0,
+            negative_prompt="ugly, blurry, low quality",
         )
+        print("\nStability AI Advanced Response (bytes length):")
+        print(f"Generated image bytes: {len(response) if response else 0}")
         
-        # For raw image bytes, you would typically save to file
-        if isinstance(image_data, bytes):
-            save_path = "stability_output.png"
-            with open(save_path, "wb") as f:
-                f.write(image_data)
-            print(f"\nStability AI Advanced Response: Image saved to {save_path}")
-        else:
-            print(f"\nStability AI Advanced Response: {image_data}")
+        # Save the image if we got a response
+        if response:
+            os.makedirs("outputs", exist_ok=True)
+            with open("outputs/stability_viking.png", "wb") as f:
+                f.write(response)
+            print("Image saved to outputs/stability_viking.png")
     except Exception as e:
         print(f"\nError with Stability AI: {e}")
 
@@ -123,69 +122,66 @@ def advanced_image_generation():
 def advanced_audio_generation():
     """Advanced audio generation examples with various parameters."""
     print("\n=== ADVANCED AUDIO GENERATION ===")
-
+    
     # ElevenLabs with specific parameters
     try:
-        audio_data = apicenter.audio(
+        response = apicenter.audio(
             provider="elevenlabs",
             model="eleven_multilingual_v2",
-            prompt="The quick brown fox jumps over the lazy dog. This is a test of advanced text-to-speech parameters.",
-            voice_id="Adam",  # specific voice
-            stability=0.5,
-            similarity_boost=0.75,
-            style=0.3,
-            use_speaker_boost=True,
+            prompt="Hello! This is a test of advanced text-to-speech parameters with APICenter.",
+            stability=0.5,         # VoiceSettings parameter
+            similarity_boost=0.75, # VoiceSettings parameter
         )
+        print("\nElevenLabs Advanced Response (bytes):")
+        print(f"Generated audio bytes: {len(response) if response else 0}")
         
-        # Save to file with descriptive name
-        save_path = "elevenlabs_advanced_output.mp3"
-        if audio_data:
-            with open(save_path, "wb") as f:
-                f.write(audio_data)
-            print(f"\nElevenLabs Advanced Response: Audio saved to {save_path}")
-            print(f"Audio size: {len(audio_data)} bytes")
+        # Save the audio if we got a response
+        if response:
+            os.makedirs("outputs", exist_ok=True)
+            with open("outputs/elevenlabs_advanced.mp3", "wb") as f:
+                f.write(response)
+            print("Audio saved to outputs/elevenlabs_advanced.mp3")
     except Exception as e:
         print(f"\nError with ElevenLabs: {e}")
 
 
-def save_response_example():
-    """Example of how to save responses in various formats."""
+def save_responses_example():
+    """Example of how to save responses from different providers."""
     print("\n=== SAVING RESPONSES EXAMPLE ===")
     
-    # Create output directory if it doesn't exist
-    os.makedirs("outputs", exist_ok=True)
-    
-    # Example 1: Save text to file
     try:
-        response = apicenter.text(
+        # Generate a text response
+        text_response = apicenter.text(
             provider="openai",
             model="gpt-3.5-turbo",
-            prompt="Write a JSON structure for a user profile",
+            prompt="Generate a short JSON object describing a fictional person",
         )
         
         # Save as plain text
+        os.makedirs("outputs", exist_ok=True)
         with open("outputs/text_response.txt", "w") as f:
-            f.write(response)
+            f.write(text_response)
             
-        # Try to parse and save as JSON if possible
+        # Save as structured data (assume JSON response)
         try:
-            json_data = json.loads(response)
-            with open("outputs/parsed_response.json", "w") as f:
-                json.dump(json_data, f, indent=2)
+            person_data = json.loads(text_response)
+            with open("outputs/structured_response.json", "w") as f:
+                json.dump(person_data, f, indent=2)
             print("\nText response saved as both plain text and structured JSON")
         except json.JSONDecodeError:
+            # Not valid JSON, just save as text
             print("\nText response saved as plain text only (not valid JSON)")
+        
+        print("""
+To save an image from a URL returned by some providers:
+import requests
+image_url = apicenter.image(...)
+response = requests.get(image_url)
+with open('outputs/image.png', 'wb') as f:
+    f.write(response.content)
+""")
     except Exception as e:
-        print(f"\nError saving text response: {e}")
-
-    # Example 2: Save image from URL
-    # Note: This would typically use a library like requests to download the image
-    print("\nTo save an image from a URL returned by some providers:")
-    print("import requests")
-    print("image_url = apicenter.image(...)")
-    print("response = requests.get(image_url)")
-    print("with open('outputs/image.png', 'wb') as f:")
-    print("    f.write(response.content)")
+        print(f"\nError saving responses: {e}")
 
 
 def main():
@@ -198,7 +194,7 @@ def main():
     advanced_text_generation()
     advanced_image_generation()
     advanced_audio_generation()
-    save_response_example()
+    save_responses_example()
     
     print("\nAll advanced examples completed!")
 
