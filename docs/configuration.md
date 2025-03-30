@@ -43,7 +43,6 @@ The credentials file follows this structure:
             "providers": {
                 "<provider>": {
                     "api_key": "your-api-key",
-                    "organization": "optional-org-id",
                     "additional_params": {}
                 }
             }
@@ -56,7 +55,7 @@ Where:
 - `<mode>` is one of: `text`, `image`, `audio`
 - `<provider>` is a supported provider for that mode (e.g., `openai`, `anthropic`)
 
-### Complete Example
+### Example Credentials File
 
 Here's a complete example of a credentials.json file:
 
@@ -96,53 +95,48 @@ Here's a complete example of a credentials.json file:
 }
 ```
 
-## Provider-Specific Configuration
+## Provider Configuration
 
 ### OpenAI
 
-Required fields:
+**Required fields:**
 - `api_key`: Your OpenAI API key
 
-Optional fields:
+**Optional fields:**
 - `organization`: Your OpenAI organization ID
 
-How to get:
-1. Create an account at [https://platform.openai.com/](https://platform.openai.com/)
-2. Navigate to API keys and create a new key
-3. Find your Organization ID in your account settings
+**How to get keys:**
+Create an account at [platform.openai.com](https://platform.openai.com/) and generate an API key.
 
 ### Anthropic
 
-Required fields:
+**Required fields:**
 - `api_key`: Your Anthropic API key
 
-How to get:
-1. Create an account at [https://console.anthropic.com/](https://console.anthropic.com/)
-2. Navigate to API keys and create a new key
+**How to get keys:**
+Create an account at [console.anthropic.com](https://console.anthropic.com/) and generate an API key.
 
 ### Stability AI
 
-Required fields:
+**Required fields:**
 - `api_key`: Your Stability AI API key
 
-How to get:
-1. Create an account at [https://platform.stability.ai/](https://platform.stability.ai/)
-2. Navigate to API keys and create a new key
+**How to get keys:**
+Create an account at [platform.stability.ai](https://platform.stability.ai/) and generate an API key.
 
 ### ElevenLabs
 
-Required fields:
+**Required fields:**
 - `api_key`: Your ElevenLabs API key
 
-How to get:
-1. Create an account at [https://elevenlabs.io/](https://elevenlabs.io/)
-2. Navigate to your profile settings to find your API key
+**How to get keys:**
+Create an account at [elevenlabs.io](https://elevenlabs.io/) and find your API key in your profile settings.
 
 ### Ollama (Local Models)
 
 Ollama doesn't require API keys in the credentials file as it runs locally.
 
-To use Ollama:
+**Setup:**
 1. Install Ollama from [ollama.ai](https://ollama.ai/)
 2. Pull your desired model: `ollama pull llama2`
 3. Run the Ollama service
@@ -150,7 +144,7 @@ To use Ollama:
 
 ## Environment Variables
 
-For additional configuration options, APICenter supports the following environment variables:
+APICenter supports the following environment variables:
 
 - `APICENTER_CREDENTIALS_PATH`: Custom path to the credentials file
   ```bash
@@ -183,23 +177,19 @@ When working with API keys:
 
 ## Troubleshooting
 
-### Credentials Not Found
+### Common Issues
 
-If you encounter a "Credentials file not found" error:
+#### Credentials Not Found
 - Verify the file exists at one of the expected locations
 - Check file permissions
 - Set the `APICENTER_CREDENTIALS_PATH` environment variable
 
-### API Key Errors
-
-If you get API key errors:
+#### API Key Errors
 - Ensure the key is correct and active
 - Check for typos or extra whitespace
 - Verify the key has sufficient permissions
 
-### Local Model Errors
-
-If Ollama isn't working:
+#### Local Model Errors
 - Verify Ollama is installed and running
 - Ensure the model is pulled (`ollama pull <model>`)
 - Check if Ollama is running on a custom host/port and set `OLLAMA_HOST` accordingly

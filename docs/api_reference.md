@@ -36,11 +36,13 @@ apicenter.text(
 
 ### Supported Providers
 
-| Provider | Models | Description |
+| Provider | Example Models | Description |
 |----------|--------|-------------|
-| `openai` | gpt-4, gpt-3.5-turbo, etc. | OpenAI's GPT models |
-| `anthropic` | claude-3-opus, claude-3-sonnet, etc. | Anthropic's Claude models |
-| `ollama` | llama2, mistral, etc. | Local models via Ollama |
+| `openai` | gpt-4, gpt-3.5-turbo | OpenAI's GPT models |
+| `anthropic` | claude-3-opus, claude-3-sonnet | Anthropic's Claude models |
+| `ollama` | llama2, mistral | Local models via Ollama |
+
+APICenter supports the latest models from each provider. As providers release new models, you can simply specify the new model name without waiting for an APICenter update.
 
 ### Examples
 
@@ -102,10 +104,10 @@ The return type varies depending on the provider:
 
 ### Supported Providers
 
-| Provider | Models | Return Type | Description |
+| Provider | Example Models | Return Type | Description |
 |----------|--------|-------------|-------------|
 | `openai` | dall-e-3, dall-e-2 | URL string | OpenAI's DALL-E models |
-| `stability` | stable-diffusion-xl-1024-v1-0, etc. | Image bytes | Stability AI's models |
+| `stability` | stable-diffusion-xl-1024-v1-0 | Image bytes | Stability AI's models |
 
 ### Examples
 
@@ -162,9 +164,9 @@ apicenter.audio(
 
 ### Supported Providers
 
-| Provider | Models | Description |
+| Provider | Example Models | Description |
 |----------|--------|-------------|
-| `elevenlabs` | eleven_multilingual_v2, etc. | ElevenLabs' text-to-speech models |
+| `elevenlabs` | eleven_multilingual_v2 | ElevenLabs' text-to-speech models |
 
 ### Examples
 
@@ -186,6 +188,8 @@ with open("speech.mp3", "wb") as f:
 
 ## Common Provider-Specific Parameters
 
+APICenter is designed to be flexible, allowing you to pass any parameters supported by the underlying APIs. Below are some common parameters for each provider, but you can use any parameters documented in the provider's official API documentation.
+
 ### OpenAI Text Parameters
 
 | Parameter | Type | Description |
@@ -193,18 +197,14 @@ with open("speech.mp3", "wb") as f:
 | `temperature` | `float` | Controls randomness (0.0-2.0) |
 | `max_tokens` | `int` | Maximum tokens to generate |
 | `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
-| `frequency_penalty` | `float` | Reduces repetition of tokens (-2.0 to 2.0) |
-| `presence_penalty` | `float` | Reduces repetition of topics (-2.0 to 2.0) |
-| `stop` | `List[str]` | Sequences where the API will stop generating |
 
 ### OpenAI Image Parameters
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `size` | `str` | Image size ("256x256", "512x512", "1024x1024", "1024x1792", "1792x1024") |
+| `size` | `str` | Image size ("256x256", "512x512", "1024x1024", etc.) |
 | `quality` | `str` | Image quality ("standard", "hd") |
 | `style` | `str` | Image style ("vivid", "natural") |
-| `n` | `int` | Number of images to generate |
 
 ### Anthropic Parameters
 
@@ -213,7 +213,6 @@ with open("speech.mp3", "wb") as f:
 | `max_tokens` | `int` | Maximum tokens to generate |
 | `temperature` | `float` | Controls randomness (0.0-1.0) |
 | `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
-| `top_k` | `int` | Limits vocabulary to top K options |
 
 ### Ollama Parameters
 
@@ -222,8 +221,6 @@ with open("speech.mp3", "wb") as f:
 | `temperature` | `float` | Controls randomness (0.0-1.0) |
 | `num_predict` | `int` | Maximum tokens to generate |
 | `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
-| `top_k` | `int` | Limits vocabulary to top K options |
-| `repeat_penalty` | `float` | Penalty for repeated tokens |
 
 ### Stability AI Parameters
 
@@ -233,8 +230,6 @@ with open("speech.mp3", "wb") as f:
 | `cfg_scale` | `float` | How closely to follow the prompt (0-35) |
 | `width` | `int` | Image width (multiple of 64) |
 | `height` | `int` | Image height (multiple of 64) |
-| `samples` | `int` | Number of images to generate |
-| `seed` | `int` | Random seed for reproducibility |
 
 ### ElevenLabs Parameters
 
@@ -243,7 +238,5 @@ with open("speech.mp3", "wb") as f:
 | `voice_id` | `str` | Voice to use |
 | `stability` | `float` | Voice stability (0.0-1.0) |
 | `similarity_boost` | `float` | Voice similarity boost (0.0-1.0) |
-| `style` | `float` | Speaking style (0.0-1.0) |
-| `output_format` | `str` | Audio format ("mp3_44100_128", etc.) |
 
-For a complete list of available parameters for each provider, refer to the provider's official API documentation. 
+The flexibility of APICenter's design means you can pass any parameter supported by the underlying provider's API without needing to update the library. For a complete list of available parameters for each provider, refer to their official API documentation. 

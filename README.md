@@ -240,7 +240,7 @@ print(follow_up)
 
 ### Provider-Specific Parameters
 
-Pass any provider-specific parameters directly:
+Pass any provider-specific parameters directly using kwargs:
 
 ```python
 # OpenAI with specific parameters
@@ -249,9 +249,7 @@ response = apicenter.text(
     model="gpt-4",
     prompt="Generate a poem about space",
     temperature=0.8,
-    max_tokens=500,
-    top_p=0.95,
-    presence_penalty=0.2
+    max_tokens=500
 )
 
 # Image generation with specific parameters
@@ -260,30 +258,19 @@ image = apicenter.image(
     model="stable-diffusion-xl-1024-v1-0",
     prompt="A photorealistic portrait of a Viking warrior",
     steps=50,
-    cfg_scale=7.0,
-    width=1024,
-    height=1024
+    cfg_scale=7.0
 )
 ```
+
+The flexibility of `**kwargs` allows you to pass any provider-specific parameters without needing to learn special syntax for each provider.
 
 ## Documentation
 
 For more detailed documentation, see the [docs](docs/) directory:
 
 - [API Reference](docs/api_reference.md) - Complete API documentation
-- [Provider Reference](docs/providers.md) - Details about supported providers
-- [Models Reference](docs/models.md) - Information about supported models
 - [Configuration Guide](docs/configuration.md) - How to configure APICenter
-
-## Examples
-
-Explore the [examples](examples/) directory for more detailed usage scenarios:
-
-- [Basic Usage](examples/basic_usage.py) - Simple examples of each mode
-- [Advanced Usage](examples/advanced_usage.py) - More complex examples with additional parameters
-- [Text Generation](examples/llm_examples.py) - Various text generation examples
-- [Image Generation](examples/image_examples.py) - Image generation with different providers
-- [Audio Generation](examples/audio_examples.py) - Text-to-speech examples
+- [Examples](examples/) - Various usage examples
 
 ## Contributing
 
