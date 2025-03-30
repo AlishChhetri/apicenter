@@ -313,6 +313,45 @@ For more detailed documentation, see the [docs](docs/) directory:
 - [Configuration Guide](docs/configuration.md) - How to configure APICenter
 - [Examples](examples/) - Various usage examples
 
+## Testing
+
+APICenter includes a comprehensive test suite to ensure reliability and stability. The tests use mock objects to simulate API calls, so you don't need actual API keys to run the tests.
+
+### Running Tests
+
+You can run the tests using the provided `run_tests.py` script:
+
+```bash
+# Run all tests
+python tests/run_tests.py
+
+# Run tests with coverage reporting
+python tests/run_tests.py --coverage
+
+# Run tests and show slow tests (>0.1s)
+python tests/run_tests.py --show-slow
+
+# Run only specific tests matching a pattern
+python tests/run_tests.py --pattern="test_text_*.py"
+```
+
+You can also run individual test files directly:
+
+```bash
+python -m unittest tests/test_apicenter.py
+```
+
+### Test Coverage
+
+For developers contributing to the project, we aim to maintain high test coverage. You can generate a coverage report by installing the coverage package and running the tests with the `--coverage` flag:
+
+```bash
+pip install coverage
+python tests/run_tests.py --coverage
+```
+
+For more information about testing, see the [tests/README.md](tests/README.md) file.
+
 ## Contributing
 
 We welcome contributions to APICenter! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute.

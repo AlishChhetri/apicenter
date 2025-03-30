@@ -11,6 +11,12 @@ All notable changes to the APICenter project will be documented in this file.
   - Support for voice settings parameters in ElevenLabs
   - Support for negative prompts in Stability AI
   - Support for model options in Ollama
+- **Comprehensive test suite**
+  - Unit tests for all providers and functionality
+  - Integration tests for end-to-end flows
+  - Error handling tests
+  - Test runner with coverage reporting
+  - 85%+ code coverage
 
 ### Fixed
 - Improved Anthropic implementation to correctly handle system prompts
