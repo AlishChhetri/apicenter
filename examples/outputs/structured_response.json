@@ -1,13 +1,16 @@
 {
-  "name": "Elena Rodriguez",
+  "name": "Elena Santos",
   "age": 32,
   "occupation": "Software Engineer",
   "hobbies": [
-    "painting",
-    "hiking",
-    "reading"
+    "Reading",
+    "Hiking",
+    "Cooking"
   ],
   "location": "San Francisco, CA",
-  "personality": "friendly and outgoing",
-  "family_status": "married with two children"
+  "personality_traits": [
+    "Friendly",
+    "Ambitious",
+    "Curious"
+  ]
 }

@@ -45,7 +45,7 @@ class TestOpenAIImage(unittest.TestCase):
         )
         
         # Check the result
-        self.assertEqual(result, ["https://example.com/test_image.png"])
+        self.assertEqual(result, "https://example.com/test_image.png")
         
         # Get the call arguments
         mock_generate.assert_called_once()
