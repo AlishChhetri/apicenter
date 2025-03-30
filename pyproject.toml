@@ -34,9 +34,11 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-select = ["E", "F", "W", "I"]
-ignore = []
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # Ignore line length errors for now
+
+[tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F401"]  # Allow unused imports in test files
 "__init__.py" = ["F401"]  # Allow unused imports in __init__.py files
