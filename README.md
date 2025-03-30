@@ -322,6 +322,9 @@ For more detailed documentation, see the [docs](docs/) directory:
 
 - [API Reference](docs/api_reference.md) - Complete API documentation
 - [Configuration Guide](docs/configuration.md) - How to configure APICenter
+- [Models Reference](docs/models.md) - Information about supported AI models
+- [Providers Guide](docs/providers.md) - Details about supported providers
+- [Release Management](docs/release_management.md) - Guide for versioning and releases
 - [Examples](examples/) - Various usage examples
 
 ## Testing
@@ -375,6 +378,40 @@ For more information about testing, see the [tests/README.md](tests/README.md) f
 ## Contributing
 
 We welcome contributions to APICenter! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute.
+
+## Releasing to PyPI
+
+APICenter uses GitHub Actions to automatically build and publish packages to PyPI when a new version tag is pushed. The process follows semantic versioning:
+
+### Release Process
+
+1. **Create a version tag**:
+   ```bash
+   # For a regular release (1.0.0, 2.1.0, etc)
+   git tag v1.0.0
+   git push origin v1.0.0
+   
+   # For pre-releases (alpha, beta, release candidate)
+   git tag v1.0.0-beta1
+   git push origin v1.0.0-beta1
+   ```
+
+2. **Automatic publishing**:  
+   When a tag matching `v*` is pushed, GitHub Actions will:
+   - Build the Python package
+   - Create a GitHub Release with the built packages as assets
+   - Publish the package to PyPI
+
+3. **Version determination**:  
+   The version is automatically determined from the Git tag using poetry-dynamic-versioning:
+   - `v1.0.0` becomes version `1.0.0`
+   - `v1.0.0-beta1` becomes version `1.0.0b1`
+   - `v1.0.0-alpha2` becomes version `1.0.0a2`
+
+### Prerequisites for Maintainers
+
+- A PyPI API token stored as a GitHub repository secret named `PYPI_API_TOKEN`
+- Permission to push tags to the repository
 
 ## License
 

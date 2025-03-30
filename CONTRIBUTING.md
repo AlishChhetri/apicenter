@@ -202,6 +202,42 @@ To add an entirely new mode beyond text, image, and audio:
 - Update relevant documentation files in the docs/ directory
 - Keep the README up-to-date with major changes
 
+## Preparing Releases
+
+When preparing for a release, follow these steps:
+
+1. **Update the CHANGELOG.md**:
+   - Move items from "Unreleased" to a new version section
+   - Follow the [Keep a Changelog](https://keepachangelog.com/) format
+   - Categorize changes as Added, Changed, Deprecated, Removed, Fixed, or Security
+
+2. **Check documentation**:
+   - Ensure all documentation is up-to-date with the latest features
+   - Update API references if there are interface changes
+   - Verify examples are working with the current code
+
+3. **Run final tests**:
+   ```bash
+   # Run all tests with coverage
+   python tests/run_tests.py --coverage
+   
+   # Verify package builds correctly
+   poetry build
+   
+   # Check package metadata
+   poetry check
+   ```
+
+4. **Determine appropriate version**:
+   Following [Semantic Versioning](https://semver.org/):
+   - MAJOR: Incompatible API changes
+   - MINOR: Backwards-compatible new functionality
+   - PATCH: Backwards-compatible bug fixes
+
+5. **Create a pull request** with these changes for review
+
+For detailed information about the release process, see [Release Management](docs/release_management.md).
+
 ## Pull Request Process
 
 1. **Update your fork** with the latest upstream changes

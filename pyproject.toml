@@ -1,8 +1,24 @@
 [tool.poetry]
 name = "apicenter"
 version = "0.1.0"
-description = ""
+description = "Universal Python interface for AI APIs with a consistent pattern across providers"
 authors = ["Alish Chhetri <chhetri01@allegheny.edu>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/alishchhetri/apicenter"
+documentation = "https://github.com/alishchhetri/apicenter/tree/main/docs"
+keywords = ["ai", "api", "openai", "anthropic", "ollama", "stability", "elevenlabs"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [
+    { include = "apicenter" }
+]
 
 [tool.poetry.scripts]
 apicenter = "apicenter.main:cli"
@@ -30,6 +46,12 @@ ruff = "^0.5.0"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+pattern = "^v(?P<base>\\d+\\.\\d+\\.\\d+)(?P<stage>alpha|beta|rc)?(?P<rev>\\d+)?$"
 
 [tool.ruff]
 target-version = "py312"

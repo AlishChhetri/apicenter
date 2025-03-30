@@ -1,40 +1,37 @@
 # Changelog
 
-All notable changes to the APICenter project will be documented in this file.
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
-- **Universal parameter handling** for all providers
-  - Automatic routing of parameters to provider-specific implementations
-  - Proper handling of system messages for text providers
-  - Support for voice settings parameters in ElevenLabs
-  - Support for negative prompts in Stability AI
-  - Support for model options in Ollama
-- **Comprehensive test suite**
-  - Unit tests for all providers and functionality
-  - Integration tests for end-to-end flows
-  - Error handling tests
-  - Test runner with coverage reporting
-  - 85%+ code coverage
-
-### Fixed
-- Improved Anthropic implementation to correctly handle system prompts
-- Updated Stability AI endpoint to match current API structure
-- Fixed Ollama parameter handling to use options dictionary for temperature, etc.
-- Fixed ElevenLabs implementation to properly handle voice settings parameters
+- Initial project structure
+- Support for text generation with OpenAI, Anthropic, and Ollama
+- Support for image generation with OpenAI DALL-E and Stability AI
+- Support for audio generation with ElevenLabs
+- Unified API interface across all providers
+- Comprehensive test suite with mock providers
+- Detailed documentation
+- GitHub Actions workflow for testing
+- GitHub Actions workflow for automated releases
 
 ### Changed
-- Updated documentation with comprehensive examples of provider-specific parameters
-- Added detailed API reference for provider-specific parameters
-- Added examples demonstrating advanced usage with structured messages and parameters
-- Added unit tests for all provider implementations
+- Fixed OpenAI DALL-E image provider to return a single URL string instead of a list
+- Updated prompt parameter to accept flexible input types
+- Improved error handling across all providers
 
-## [0.1.0] - Initial Release
+### Fixed
+- Corrected credential handling for various providers
+- Fixed bare except issues in stability provider
+- Resolved unused variable issues in Ollama provider
 
-### Added
-- Initial framework for unified AI API interface
-- Support for text generation with OpenAI, Anthropic, and Ollama
-- Support for image generation with OpenAI and Stability AI
-- Support for audio generation with ElevenLabs
-- Basic credential management system 
+## [0.1.0] - Initial Release (Coming Soon)
+
+- First public release
+- Basic functionality for text, image, and audio generation
+
+[Unreleased]: https://github.com/alishchhetri/apicenter/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/alishchhetri/apicenter/releases/tag/v0.1.0 
