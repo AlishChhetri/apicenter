@@ -1,63 +1,40 @@
-# Configuration Guide
+# APICenter Configuration Guide
 
-This document explains how to configure APICenter to work with various AI providers.
+This guide explains how to configure APICenter for use with various AI providers.
 
 ## Table of Contents
 
-- [Credentials File](#credentials-file)
-  - [Location](#location)
-  - [Structure](#structure)
-  - [Example](#example)
-- [Environment Variables](#environment-variables)
-- [Per-Provider Configuration](#per-provider-configuration)
+- [Credentials Configuration](#credentials-configuration)
+  - [Credentials File Location](#credentials-file-location)
+  - [Credentials File Format](#credentials-file-format)
+- [Provider-Specific Configuration](#provider-specific-configuration)
   - [OpenAI](#openai)
   - [Anthropic](#anthropic)
   - [Stability AI](#stability-ai)
   - [ElevenLabs](#elevenlabs)
   - [Ollama](#ollama)
-- [Default Parameters](#default-parameters)
+- [Environment Variables](#environment-variables)
+- [Using Multiple Configurations](#using-multiple-configurations)
+- [Securing Your Credentials](#securing-your-credentials)
 - [Troubleshooting](#troubleshooting)
 
-## Credentials File
+## Credentials Configuration
 
-APICenter uses a JSON file to store API keys and other provider-specific configuration. This keeps your credentials separate from your code and allows for different configurations in different environments.
+APICenter uses a credentials file to store API keys and other authentication information for the various AI services it interacts with.
 
-### File Location
+### Credentials File Location
 
-APICenter will look for a `credentials.json` file in the following locations (in order):
+APICenter will look for credentials in the following locations (in order):
 
-1. Custom path specified by the `APICENTER_CREDENTIALS_PATH` environment variable
-2. Current working directory (`./credentials.json`)
-3. Project root directory
-4. User's home directory (`~/.apicenter/credentials.json`)
-5. System config directory (`~/.config/apicenter/credentials.json`)
+1. Custom path specified by `APICENTER_CREDENTIALS_PATH` environment variable
+2. Current working directory: `./credentials.json`
+3. Project root directory: `<project_root>/credentials.json`
+4. User's home directory: `~/.apicenter/credentials.json`
+5. System config directory: `~/.config/apicenter/credentials.json`
 
-### File Structure
+### Credentials File Format
 
-The credentials file follows this structure:
-
-```json
-{
-    "modes": {
-        "<mode>": {
-            "providers": {
-                "<provider>": {
-                    "api_key": "your-api-key",
-                    "additional_params": {}
-                }
-            }
-        }
-    }
-}
-```
-
-Where:
-- `<mode>` is one of: `text`, `image`, `audio`
-- `<provider>` is a supported provider for that mode (e.g., `openai`, `anthropic`)
-
-### Example Credentials File
-
-Here's a complete example of a credentials.json file:
+The credentials file uses a JSON structure organized by mode and provider:
 
 ```json
 {
@@ -65,29 +42,29 @@ Here's a complete example of a credentials.json file:
         "text": {
             "providers": {
                 "openai": {
-                    "api_key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                    "organization": "org-xxxxxxxxxxxxxxxx"
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
                 },
                 "anthropic": {
-                    "api_key": "sk-ant-apixx-xxxxxxxxxxxxxxxxxxxx"
+                    "api_key": "your-anthropic-api-key"
                 }
             }
         },
         "image": {
             "providers": {
                 "openai": {
-                    "api_key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                    "organization": "org-xxxxxxxxxxxxxxxx"
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
                 },
                 "stability": {
-                    "api_key": "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    "api_key": "your-stability-api-key"
                 }
             }
         },
         "audio": {
             "providers": {
                 "elevenlabs": {
-                    "api_key": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                    "api_key": "your-elevenlabs-api-key"
                 }
             }
         }
@@ -95,85 +72,96 @@ Here's a complete example of a credentials.json file:
 }
 ```
 
-## Provider Configuration
+You only need to include configurations for the providers you plan to use.
+
+## Provider-Specific Configuration
 
 ### OpenAI
 
-**Required fields:**
-- `api_key`: Your OpenAI API key
+OpenAI requires an API key and optionally an organization ID:
 
-**Optional fields:**
-- `organization`: Your OpenAI organization ID
+```json
+"openai": {
+    "api_key": "your-openai-api-key",
+    "organization": "your-organization-id"  // Optional
+}
+```
 
-**How to get keys:**
-Create an account at [platform.openai.com](https://platform.openai.com/) and generate an API key.
+You can obtain an API key from the [OpenAI API Keys page](https://platform.openai.com/api-keys).
 
 ### Anthropic
 
-**Required fields:**
-- `api_key`: Your Anthropic API key
+Anthropic requires an API key:
 
-**How to get keys:**
-Create an account at [console.anthropic.com](https://console.anthropic.com/) and generate an API key.
+```json
+"anthropic": {
+    "api_key": "your-anthropic-api-key"
+}
+```
+
+You can obtain an API key from the [Anthropic Console](https://console.anthropic.com/).
 
 ### Stability AI
 
-**Required fields:**
-- `api_key`: Your Stability AI API key
+Stability AI requires an API key:
 
-**How to get keys:**
-Create an account at [platform.stability.ai](https://platform.stability.ai/) and generate an API key.
+```json
+"stability": {
+    "api_key": "your-stability-api-key"
+}
+```
+
+You can obtain an API key from the [Stability AI Dashboard](https://platform.stability.ai/account/keys).
 
 ### ElevenLabs
 
-**Required fields:**
-- `api_key`: Your ElevenLabs API key
+ElevenLabs requires an API key:
 
-**How to get keys:**
-Create an account at [elevenlabs.io](https://elevenlabs.io/) and find your API key in your profile settings.
+```json
+"elevenlabs": {
+    "api_key": "your-elevenlabs-api-key"
+}
+```
+
+You can obtain an API key from the [ElevenLabs Dashboard](https://elevenlabs.io/app/profile).
 
 ### Ollama (Local Models)
 
-Ollama doesn't require API keys in the credentials file as it runs locally.
+Ollama doesn't require an API key since it runs locally. However, you can configure the host if needed:
 
-**Setup:**
-1. Install Ollama from [ollama.ai](https://ollama.ai/)
-2. Pull your desired model: `ollama pull llama2`
-3. Run the Ollama service
-4. Use APICenter with `provider="ollama"`
+```bash
+# Set Ollama host environment variable (optional)
+export OLLAMA_HOST="http://localhost:11434"
+```
+
+By default, APICenter will connect to Ollama at `http://localhost:11434`.
 
 ## Environment Variables
 
 APICenter supports the following environment variables:
 
-- `APICENTER_CREDENTIALS_PATH`: Custom path to the credentials file
-  ```bash
-  export APICENTER_CREDENTIALS_PATH="/path/to/your/credentials.json"
-  ```
+- `APICENTER_CREDENTIALS_PATH`: Path to credentials file
+- `OLLAMA_HOST`: Host for Ollama API (default: `http://localhost:11434`)
 
-- `OLLAMA_HOST`: Host address for Ollama (default: `http://localhost:11434`)
-  ```bash
-  export OLLAMA_HOST="http://localhost:11434"
-  ```
+## Using Multiple Configurations
 
-## Security Best Practices
+You can maintain multiple configuration files for different projects or environments:
 
-When working with API keys:
+1. Create separate credential files (e.g., `credentials-dev.json`, `credentials-prod.json`)
+2. Set the environment variable to use a specific configuration:
 
-1. **Never commit credentials to version control**
-   - Add `credentials.json` to your `.gitignore` file
-   
-2. **Use environment-specific credential files**
-   - Use different files for development, testing, and production
-   
-3. **Limit API key permissions**
-   - Create keys with the minimum necessary permissions
-   
-4. **Rotate keys periodically**
-   - Change your API keys regularly
+```bash
+export APICENTER_CREDENTIALS_PATH="/path/to/credentials-prod.json"
+```
 
-5. **Use environment variables for CI/CD**
-   - In CI/CD pipelines, inject credentials as environment variables
+## Securing Your Credentials
+
+To keep your API keys secure:
+
+1. Never commit your credentials.json file to version control
+2. Add credentials.json to your .gitignore file
+3. Consider using environment variables or a secret management system for production use
+4. Set appropriate file permissions (e.g., `chmod 600 credentials.json`)
 
 ## Troubleshooting
 

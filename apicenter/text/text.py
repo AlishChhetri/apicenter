@@ -1,3 +1,5 @@
+"""Text generation provider implementations for various AI services."""
+
 from apicenter.core.credentials import credentials
 from .providers.openai import call_openai
 from .providers.anthropic import call_anthropic
@@ -11,15 +13,15 @@ from ..core.base import BaseProvider, ProviderConfig
 
 
 class TextProvider(BaseProvider[str]):
-    """Provider for text generation using various AI services."""
+    """Provider for text generation across multiple AI services."""
     
     def get_mode(self) -> str:
-        """Return the mode this provider handles."""
+        """Return the mode identifier for this provider."""
         return "text"
     
     def call(self) -> str:
-        """Make the API call and return the response."""
-        # Dictionary mapping providers to their call methods
+        """Route the request to the appropriate provider implementation."""
+        # Map each provider to its implementation method
         provider_methods = {
             "openai": self.call_openai,
             "anthropic": self.call_anthropic,
@@ -27,6 +29,7 @@ class TextProvider(BaseProvider[str]):
         }
         
         try:
+            # Call the appropriate provider method if supported
             if self.provider in provider_methods:
                 return provider_methods[self.provider]()
             else:
@@ -35,15 +38,17 @@ class TextProvider(BaseProvider[str]):
             raise ValueError(f"Error calling {self.provider} API: {str(e)}")
     
     def call_openai(self) -> str:
-        """Call OpenAI's API."""
+        """Process request through OpenAI's text generation API."""
+        # Prepare credentials dictionary
         credentials_dict = {
             "api_key": self.config.api_key,
             "organization": self.config.organization
         }
         
-        # Remove None values
+        # Remove None values from credentials
         credentials_dict = {k: v for k, v in credentials_dict.items() if v is not None}
         
+        # Call the OpenAI implementation
         return call_openai(
             model=self.model,
             prompt=self.prompt,
@@ -52,11 +57,13 @@ class TextProvider(BaseProvider[str]):
         )
     
     def call_anthropic(self) -> str:
-        """Call Anthropic's API."""
+        """Process request through Anthropic's text generation API."""
+        # Prepare credentials dictionary
         credentials_dict = {
             "api_key": self.config.api_key
         }
         
+        # Call the Anthropic implementation
         return call_anthropic(
             model=self.model,
             prompt=self.prompt,
@@ -65,8 +72,8 @@ class TextProvider(BaseProvider[str]):
         )
         
     def call_ollama(self) -> str:
-        """Call Ollama's API (local model)."""
-        # Ollama doesn't need any API credentials as it runs locally
+        """Process request through local Ollama text generation."""
+        # Call the Ollama implementation (no credentials needed)
         return call_ollama(
             model=self.model,
             prompt=self.prompt,
@@ -75,15 +82,6 @@ class TextProvider(BaseProvider[str]):
 
 
 def text(provider: str, model: str, prompt: Union[str, List[Dict[str, str]]], **kwargs: Any) -> str:
-    """Universal function to call any supported AI model with minimal input.
-    
-    Args:
-        provider: The AI service provider (e.g., "openai", "anthropic", "ollama")
-        model: The specific model to use
-        prompt: The input text for the AI operation (string or message list)
-        **kwargs: Additional parameters specific to the provider and model
-        
-    Returns:
-        The generated text response
-    """
+    """Generate text using any supported AI provider with a unified interface."""
+    # Create provider instance and get response
     return TextProvider(provider, model, prompt, **kwargs).get_response()

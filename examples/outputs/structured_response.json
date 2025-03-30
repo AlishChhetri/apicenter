@@ -1,0 +1,12 @@
+{
+  "name": "Emily Parker",
+  "age": 28,
+  "gender": "female",
+  "occupation": "teacher",
+  "hobbies": [
+    "reading",
+    "yoga",
+    "painting"
+  ],
+  "pets": true
+}

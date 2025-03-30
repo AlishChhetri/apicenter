@@ -1,49 +1,38 @@
+"""ElevenLabs text-to-speech provider implementation."""
+
 from elevenlabs.client import ElevenLabs
 from elevenlabs.types import VoiceSettings
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 
 
 def call_elevenlabs(model: str, prompt: str, credentials: Dict[str, Any], **kwargs: Any) -> bytes:
-    """ElevenLabs provider implementation.
-    
-    Args:
-        model: The model to use (e.g., 'eleven_multilingual_v2')
-        prompt: The text to convert to speech
-        credentials: API credentials dictionary containing api_key
-        **kwargs: Additional parameters for the ElevenLabs API
-        
-    Returns:
-        Generated audio as bytes
-        
-    Raises:
-        ValueError: If there's an error with the API call
-    """
+    """Handle text-to-speech conversion through ElevenLabs API."""
     try:
-        # Create client with API key
+        # Initialize ElevenLabs client with credentials
         client = ElevenLabs(**credentials)
 
-        # Default parameters if not provided in kwargs
+        # Set default parameters if not provided
         kwargs.setdefault("voice_id", "JBFqnCBsd6RMkjVDRZzb")  # Default voice
         kwargs.setdefault("output_format", "mp3_44100_128")    # Default format
         
-        # Extract parameters for the convert method vs. voice_settings
+        # Separate parameters by destination
         text_to_speech_params = {}
         voice_settings_params = {}
         
-        # Parameters for VoiceSettings object
+        # List of parameters for VoiceSettings object
         voice_settings_fields = ["stability", "similarity_boost", "style", "use_speaker_boost", "speed"]
         
-        # Extract voice settings parameters if any
+        # Extract voice settings parameters
         for field in voice_settings_fields:
             if field in kwargs:
                 voice_settings_params[field] = kwargs.pop(field)
                 
-        # Create voice_settings object if we have any parameters
+        # Create VoiceSettings object if parameters were provided
         if voice_settings_params:
             voice_settings = VoiceSettings(**voice_settings_params)
             text_to_speech_params["voice_settings"] = voice_settings
             
-        # Other valid parameters for the convert method
+        # List of valid parameters for the convert method
         valid_params = [
             "voice_id", "output_format", "model_id", "optimize_streaming_latency", 
             "enable_logging", "language_code", "seed", "previous_text", "next_text", 
@@ -51,20 +40,21 @@ def call_elevenlabs(model: str, prompt: str, credentials: Dict[str, Any], **kwar
             "apply_text_normalization", "apply_language_text_normalization"
         ]
         
-        # Extract parameters for convert method
+        # Extract API-specific parameters
         for param in valid_params:
             if param in kwargs:
                 text_to_speech_params[param] = kwargs.pop(param)
         
-        # Handle model_id (API expects model_id, but we use model for consistency)
+        # Set model ID - the API expects model_id but we use model for consistency
         text_to_speech_params.setdefault("model_id", model)
                 
-        # Get the generator object and convert to bytes automatically
+        # Generate audio from text
         audio_generator = client.text_to_speech.convert(
             text=prompt,
             **text_to_speech_params
         )
         
+        # Concatenate all audio chunks and return as bytes
         return b"".join(audio_generator)
     except Exception as e:
         raise ValueError(f"ElevenLabs audio generation error: {str(e)}")

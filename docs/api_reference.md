@@ -1,335 +1,281 @@
-# API Reference
+# APICenter API Reference
 
-This document provides detailed information about the APICenter API, including all public methods and their parameters.
+This document provides comprehensive details about APICenter's API interface, all available providers, supported parameters, and usage patterns.
 
-## Core API
+## Core Interface
 
-### apicenter
-
-The `apicenter` object is the main entry point for all API functions.
+APICenter follows a simple, consistent pattern for all API calls:
 
 ```python
 from apicenter import apicenter
+
+response = apicenter.<mode>(
+    provider="<provider_name>",
+    model="<model_name>",
+    prompt="<your_prompt>",
+    **kwargs  # Additional provider-specific parameters
+)
 ```
 
-## Universal Parameter Handling
-
-One of APICenter's core features is universal parameter handling through `**kwargs`. This means you can pass any parameters supported by the underlying provider's API directly in your function call, and APICenter will handle the routing correctly.
-
-Each provider implementation includes intelligent handling of parameters, including:
-
-- **Automatic parameter routing**: Parameters are routed to their correct destination (e.g., stability parameters for ElevenLabs, options dictionary for Ollama)
-- **Default values**: Sensible defaults are provided for required parameters
-- **Provider-specific structures**: Parameters are converted to the structure expected by each provider
-
-This flexibility means you don't need to learn different parameter structures for each provider - simply pass parameters according to the provider's API documentation, and APICenter takes care of the rest.
+Where:
+- `mode` is one of: `text`, `image`, or `audio`
+- `provider` is the AI service provider (e.g., "openai", "anthropic", "stability")
+- `model` is the specific model to use (varies by provider)
+- `prompt` is the input text (or message list for chat models)
+- `**kwargs` allows passing provider-specific parameters
 
 ## Text Generation
 
-Generate text with AI models from various providers.
+### Basic Usage
 
 ```python
-apicenter.text(
-    provider: str,          # AI service provider name
-    model: str,             # Model name
-    prompt: Union[str, List[Dict[str, str]]],  # Text prompt or message list
-    **kwargs: Any           # Provider-specific parameters
-) -> str                    # Returns generated text
-```
-
-### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `provider` | `str` | The AI service provider (e.g., "openai", "anthropic", "ollama") |
-| `model` | `str` | The specific model to use (e.g., "gpt-4", "claude-3-sonnet-20240229") |
-| `prompt` | `str` or `List[Dict[str, str]]` | Either a string prompt or a list of message dictionaries |
-| `**kwargs` | Any | Additional provider-specific parameters |
-
-### Improved System Prompt Support
-
-APICenter now provides universal support for system prompts across all text providers, allowing you to use the same messaging format regardless of which provider you're using.
-
-When you provide a list of message dictionaries with a "system" role message, APICenter will:
-
-- For OpenAI: Pass the system message directly as part of the messages list
-- For Anthropic: Extract the system message and pass it as a separate `system` parameter
-- For Ollama: Properly handle the system message based on model capabilities
-
-This means you can write code like this and it will work with any provider:
-
-```python
-response = apicenter.text(
-    provider="any_provider",  # openai, anthropic, ollama, etc.
-    model="model_name",
-    prompt=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Your question here"}
-    ]
-)
-```
-
-### Supported Providers
-
-| Provider | Example Models | Description |
-|----------|--------|-------------|
-| `openai` | gpt-4, gpt-3.5-turbo | OpenAI's GPT models |
-| `anthropic` | claude-3-opus, claude-3-sonnet | Anthropic's Claude models |
-| `ollama` | llama2, mistral | Local models via Ollama |
-
-APICenter supports the latest models from each provider. As providers release new models, you can simply specify the new model name without waiting for an APICenter update.
-
-### Examples
-
-```python
-# Simple text prompt
 response = apicenter.text(
     provider="openai",
     model="gpt-4",
-    prompt="Explain how quantum computing works in simple terms."
-)
-
-# Chat message format
-messages = [
-    {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "What is the distance between Earth and Mars?"}
-]
-response = apicenter.text(
-    provider="anthropic",
-    model="claude-3-sonnet-20240229",
-    prompt=messages
-)
-
-# Local model with Ollama
-response = apicenter.text(
-    provider="ollama",
-    model="llama2",
-    prompt="Write a poem about artificial intelligence.",
-    temperature=0.7
+    prompt="Explain quantum computing in simple terms"
 )
 ```
 
-### Provider-Specific Message Formats
-
-APICenter is designed to handle different message formats properly for each provider:
+### Available Providers
 
 #### OpenAI
 
-With OpenAI, you can use the standard format with "system", "user", and "assistant" roles:
-
 ```python
 response = apicenter.text(
     provider="openai",
-    model="gpt-4",
-    prompt=[
-        {"role": "system", "content": "You are a helpful assistant specialized in science."},
-        {"role": "user", "content": "Explain black holes."},
-        {"role": "assistant", "content": "Black holes are regions of spacetime..."},
-        {"role": "user", "content": "What happens if you fall into one?"}
-    ]
+    model="gpt-4",  # gpt-3.5-turbo, gpt-4-turbo, etc.
+    prompt="Write a poem about mountains",
+    temperature=0.7,
+    max_tokens=500,
+    top_p=1.0
 )
 ```
 
-#### Anthropic
+**Supported Parameters:**
+- `temperature`: Controls randomness (0.0-2.0)
+- `max_tokens`: Maximum tokens to generate
+- `top_p`: Nucleus sampling parameter
+- `frequency_penalty`: Reduces repetition of token sequences
+- `presence_penalty`: Encourages diversity
+- `stop`: Sequences where the API will stop generating further tokens
+- And any other parameters supported by OpenAI's Chat Completions API
 
-For Anthropic models, system prompts are automatically extracted and handled correctly:
+#### Anthropic
 
 ```python
 response = apicenter.text(
     provider="anthropic",
-    model="claude-3-sonnet-20240229",
-    prompt=[
-        {"role": "system", "content": "You are a helpful assistant that explains complex topics simply."},
-        {"role": "user", "content": "Explain quantum computing to me like I'm 10 years old."}
-    ],
-    temperature=0.3,
-    max_tokens=800
+    model="claude-3-sonnet-20240229",  # or claude-3-opus-20240229, etc.
+    prompt="Explain how photosynthesis works",
+    temperature=0.5,
+    max_tokens=1000
 )
 ```
 
-#### Ollama
+**Supported Parameters:**
+- `temperature`: Controls randomness (0.0-1.0)
+- `max_tokens`: Maximum tokens to generate
+- `top_p`: Nucleus sampling parameter
+- `top_k`: Limits token selection to top k options
+- And any other parameters supported by Anthropic's API
 
-For Ollama local models, you can use a simplified format:
+#### Ollama (Local Models)
 
 ```python
 response = apicenter.text(
     provider="ollama",
-    model="llama2",
-    prompt=[
-        {"role": "user", "content": "What are the three laws of robotics?"},
-        {"role": "assistant", "content": "The three laws are..."},
-        {"role": "user", "content": "Who created these laws?"}
-    ]
+    model="llama2",  # or mistral, phi-2, etc.
+    prompt="What is the capital of France?",
+    temperature=0.8,
+    num_predict=100
+)
+```
+
+**Supported Parameters:**
+- `temperature`: Controls randomness
+- `num_predict`: Maximum tokens to generate
+- `top_p`: Nucleus sampling parameter
+- `top_k`: Limits token selection to top k options
+- `stop`: Sequences where generation will stop
+- And other parameters supported by Ollama
+
+### Chat Conversations
+
+For chat-based models, you can use message lists:
+
+```python
+messages = [
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "What is the distance to the Moon?"}
+]
+
+response = apicenter.text(
+    provider="openai",
+    model="gpt-4",
+    prompt=messages
 )
 ```
 
 ## Image Generation
 
-Generate images with AI models from various providers.
+### Basic Usage
 
 ```python
-apicenter.image(
-    provider: str,        # AI service provider name
-    model: str,           # Model name
-    prompt: str,          # Text description of the image to generate
-    **kwargs: Any         # Provider-specific parameters
-) -> Union[str, bytes, List[str]]  # Returns URL(s) or image bytes
-```
-
-### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `provider` | `str` | The AI service provider (e.g., "openai", "stability") |
-| `model` | `str` | The specific model to use (e.g., "dall-e-3") |
-| `prompt` | `str` | Text description of the image to generate |
-| `**kwargs` | Any | Additional provider-specific parameters |
-
-### Return Value
-
-The return type varies depending on the provider:
-- OpenAI: Returns a URL string (or list of URL strings)
-- Stability AI: Returns image bytes
-
-### Supported Providers
-
-| Provider | Example Models | Return Type | Description |
-|----------|--------|-------------|-------------|
-| `openai` | dall-e-3, dall-e-2 | URL string | OpenAI's DALL-E models |
-| `stability` | stable-diffusion-xl-1024-v1-0 | Image bytes | Stability AI's models |
-
-### Examples
-
-```python
-# OpenAI DALL-E (returns URL)
 image_url = apicenter.image(
     provider="openai",
     model="dall-e-3",
-    prompt="A photorealistic image of a futuristic city with flying cars",
-    size="1024x1024",
-    quality="hd"
+    prompt="A serene mountain lake at sunset"
 )
-
-# Download and save the image
-import requests
-response = requests.get(image_url)
-with open("city_image.png", "wb") as f:
-    f.write(response.content)
-
-# Stability AI (returns bytes directly)
-image_bytes = apicenter.image(
-    provider="stability",
-    model="stable-diffusion-xl-1024-v1-0",
-    prompt="A fantasy landscape with dragons and castles",
-    steps=50,
-    cfg_scale=7.0,
-    negative_prompt="ugly, blurry, low quality"
-)
-
-with open("fantasy_landscape.png", "wb") as f:
-    f.write(image_bytes)
 ```
+
+### Available Providers
+
+#### OpenAI (DALL-E)
+
+```python
+image = apicenter.image(
+    provider="openai",
+    model="dall-e-3",  # or dall-e-2
+    prompt="A beautiful sunset over mountains",
+    size="1024x1024",  # 256x256, 512x512, 1024x1024, 1792x1024, 1024x1792
+    quality="hd",  # "standard" or "hd"
+    style="vivid",  # "vivid" or "natural"
+    output_format="url"  # "url" (default), "png", or "jpeg"
+)
+```
+
+**Supported Parameters:**
+- `size`: Image dimensions
+- `quality`: Image quality
+- `style`: Image style
+- `output_format`: Return format (URL or binary data)
+- And other parameters supported by OpenAI's Image Generation API
+
+#### Stability AI
+
+```python
+image = apicenter.image(
+    provider="stability", 
+    model="stable-diffusion-xl-1024-v1-0",
+    prompt="A cyberpunk cityscape at night with neon lights",
+    height=1024,
+    width=1024,
+    steps=30,
+    cfg_scale=7.0,
+    negative_prompt="blurry, ugly, deformed"
+)
+```
+
+**Supported Parameters:**
+- `height`: Image height
+- `width`: Image width
+- `steps`: Number of diffusion steps
+- `cfg_scale`: How closely the image should follow the prompt
+- `negative_prompt`: What to avoid in the image
+- And other parameters supported by Stability AI's API
 
 ## Audio Generation
 
-Generate audio (text-to-speech) with AI models.
+### Basic Usage
 
 ```python
-apicenter.audio(
-    provider: str,        # AI service provider name
-    model: str,           # Model name
-    prompt: str,          # Text to convert to speech
-    **kwargs: Any         # Provider-specific parameters
-) -> bytes               # Returns audio data as bytes
-```
-
-### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `provider` | `str` | The AI service provider (e.g., "elevenlabs") |
-| `model` | `str` | The specific model to use (e.g., "eleven_multilingual_v2") |
-| `prompt` | `str` | Text to convert to speech |
-| `**kwargs` | Any | Additional provider-specific parameters |
-
-### Supported Providers
-
-| Provider | Example Models | Description |
-|----------|--------|-------------|
-| `elevenlabs` | eleven_multilingual_v2 | ElevenLabs' text-to-speech models |
-
-### Examples
-
-```python
-# Generate speech with ElevenLabs
 audio_bytes = apicenter.audio(
     provider="elevenlabs",
     model="eleven_multilingual_v2",
-    prompt="Hello world! This is a text-to-speech demonstration.",
-    voice_id="Rachel",
-    stability=0.5,  # Voice settings parameter
-    similarity_boost=0.75,  # Voice settings parameter
-    output_format="mp3_44100_128"
+    prompt="Hello, this is a text-to-speech test."
 )
-
-# Save audio to file
-with open("speech.mp3", "wb") as f:
-    f.write(audio_bytes)
 ```
 
-## Common Provider-Specific Parameters
+### Available Providers
 
-APICenter is designed to be flexible, allowing you to pass any parameters supported by the underlying APIs. Below are some common parameters for each provider, but you can use any parameters documented in the provider's official API documentation.
+#### ElevenLabs
 
-### OpenAI Text Parameters
+```python
+audio = apicenter.audio(
+    provider="elevenlabs",
+    model="eleven_multilingual_v2",
+    prompt="Hello, this is a text-to-speech test.",
+    voice_id="Adam",  # Voice ID from ElevenLabs
+    stability=0.5,
+    similarity_boost=0.8,
+    output_format="mp3_44100_128"
+)
+```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `temperature` | `float` | Controls randomness (0.0-2.0) |
-| `max_tokens` | `int` | Maximum tokens to generate |
-| `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
+**Supported Parameters:**
+- `voice_id`: The voice to use
+- `stability`: Voice stability (0.0-1.0)
+- `similarity_boost`: Voice similarity boost (0.0-1.0)
+- `output_format`: Audio format
+- `style`: Voice style parameter
+- `speed`: Speech speed
+- And other parameters supported by ElevenLabs API
 
-### OpenAI Image Parameters
+## Error Handling
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `size` | `str` | Image size ("256x256", "512x512", "1024x1024", etc.) |
-| `quality` | `str` | Image quality ("standard", "hd") |
-| `style` | `str` | Image style ("vivid", "natural") |
+APICenter provides standardized error handling:
 
-### Anthropic Parameters
+```python
+try:
+    response = apicenter.text(
+        provider="openai",
+        model="gpt-4",
+        prompt="Hello, world!"
+    )
+except ValueError as e:
+    print(f"Error: {e}")
+```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `max_tokens` | `int` | Maximum tokens to generate |
-| `temperature` | `float` | Controls randomness (0.0-1.0) |
-| `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
+Common error scenarios:
+- Missing or invalid API credentials
+- Unsupported provider or model
+- API rate limits
+- Invalid parameters
+- Network issues
 
-### Ollama Parameters
+## Credential Management
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `temperature` | `float` | Controls randomness (0.0-1.0) |
-| `num_predict` | `int` | Maximum tokens to generate |
-| `top_p` | `float` | Nucleus sampling parameter (0.0-1.0) |
+APICenter uses `credentials.json` for API keys. Place it in one of:
+- Current working directory
+- Project root directory
+- User's home directory (`~/.apicenter/credentials.json`)
+- System config directory (`~/.config/apicenter/credentials.json`)
+- Custom path specified by `APICENTER_CREDENTIALS_PATH` environment variable
 
-### Stability AI Parameters
+Example `credentials.json`:
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `steps` | `int` | Number of diffusion steps (10-150) |
-| `cfg_scale` | `float` | How closely to follow the prompt (0-35) |
-| `width` | `int` | Image width (multiple of 64) |
-| `height` | `int` | Image height (multiple of 64) |
-| `negative_prompt` | `str` | Text prompts to avoid in the generation |
-
-### ElevenLabs Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `voice_id` | `str` | Voice to use |
-| `stability` | `float` | Voice stability (0.0-1.0) |
-| `similarity_boost` | `float` | Voice similarity boost (0.0-1.0) |
-| `output_format` | `str` | Audio format (e.g., "mp3_44100_128") |
-
-The flexibility of APICenter's design means you can pass any parameter supported by the underlying provider's API without needing to update the library. For a complete list of available parameters for each provider, refer to their official API documentation. 
+```json
+{
+    "modes": {
+        "text": {
+            "providers": {
+                "openai": {
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
+                },
+                "anthropic": {
+                    "api_key": "your-anthropic-api-key"
+                }
+            }
+        },
+        "image": {
+            "providers": {
+                "openai": {
+                    "api_key": "your-openai-api-key",
+                    "organization": "your-org-id"
+                },
+                "stability": {
+                    "api_key": "your-stability-api-key"
+                }
+            }
+        },
+        "audio": {
+            "providers": {
+                "elevenlabs": {
+                    "api_key": "your-elevenlabs-api-key"
+                }
+            }
+        }
+    }
+}
+``` 
