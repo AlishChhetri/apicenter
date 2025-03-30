@@ -12,7 +12,9 @@ def call_elevenlabs(model, prompt, credentials, **kwargs):
     # Get the generator object and convert to bytes automatically
     try:
         audio_generator = client.text_to_speech.convert(
-            text=prompt, model_id=model, **kwargs
+            text=prompt, 
+            model_id=model, 
+            **kwargs
         )
         return b"".join(audio_generator)
     except Exception as e:

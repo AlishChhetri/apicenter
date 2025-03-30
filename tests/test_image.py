@@ -70,8 +70,8 @@ def main():
     print("\nTesting OpenAI URL DALL-E:")
     test_openai_url()
 
-    print("\nTesting OpenAI Byte DALL-E:")
-    test_openai_byte()
+    # print("\nTesting OpenAI Byte DALL-E:")
+    # test_openai_byte()
 
     # print("\nTesting Stability AI:")
     # test_stability()
