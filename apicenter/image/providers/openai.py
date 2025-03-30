@@ -5,10 +5,10 @@ import base64
 def call_openai(model, prompt, credentials, **kwargs):
     """OpenAI DALL-E provider implementation."""
     client = OpenAI(**credentials)
-    
+
     # Check if direct image output is requested
     want_bytes = kwargs.pop("output_format", None) in ["png", "jpeg"]
-    
+
     response = client.images.generate(
         model=model,
         prompt=prompt,

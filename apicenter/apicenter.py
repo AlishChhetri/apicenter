@@ -25,7 +25,7 @@ class APICenter:
             },
             "audio": {
                 "elevenlabs": AudioProvider,
-            }
+            },
         }
 
     def get_provider_class(self, mode: str, provider: str) -> Type[BaseProvider]:
@@ -33,44 +33,28 @@ class APICenter:
         # Check if mode is supported
         if mode not in self.providers:
             raise ValueError(f"Unsupported mode: {mode}")
-        
+
         # Check if provider is supported for this mode
         if provider not in self.providers[mode]:
             raise ValueError(f"Unsupported provider '{provider}' for mode '{mode}'")
-        
+
         return self.providers[mode][provider]
 
-    def text(
-        self,
-        provider: str,
-        model: str,
-        prompt: Any,
-        **kwargs: Any
-    ) -> str:
+    def text(self, provider: str, model: str, prompt: Any, **kwargs: Any) -> str:
         """Generate text using the specified AI provider and model."""
         # Get provider class and create instance with parameters
         provider_class = self.get_provider_class("text", provider)
         return provider_class(provider, model, prompt, **kwargs).get_response()
 
     def image(
-        self,
-        provider: str,
-        model: str,
-        prompt: Any,
-        **kwargs: Any
+        self, provider: str, model: str, prompt: Any, **kwargs: Any
     ) -> Union[str, bytes, List[str]]:
         """Generate an image using the specified AI provider and model."""
         # Get provider class and create instance with parameters
         provider_class = self.get_provider_class("image", provider)
         return provider_class(provider, model, prompt, **kwargs).get_response()
 
-    def audio(
-        self,
-        provider: str,
-        model: str,
-        prompt: Any,
-        **kwargs: Any
-    ) -> bytes:
+    def audio(self, provider: str, model: str, prompt: Any, **kwargs: Any) -> bytes:
         """Generate audio using the specified AI provider and model."""
         # Get provider class and create instance with parameters
         provider_class = self.get_provider_class("audio", provider)

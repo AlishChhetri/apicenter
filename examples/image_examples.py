@@ -20,6 +20,7 @@ import requests
 OUTPUTS_DIR = Path(__file__).parent / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
+
 def image_examples():
     """Examples of image generation using different providers."""
     # OpenAI DALL-E example
@@ -30,14 +31,14 @@ def image_examples():
             prompt="A beautiful sunset over mountains, digital art style",
             size="1024x1024",
             quality="standard",
-            style="vivid"
+            style="vivid",
         )
         print("DALL-E Image URL:", dall_e_image)
-        
+
         # Save the URL to a text file
         with open(OUTPUTS_DIR / "dalle_sunset_url.txt", "w") as f:
             f.write(dall_e_image)
-            
+
         # Download the image
         try:
             response = requests.get(dall_e_image)
@@ -58,10 +59,10 @@ def image_examples():
             prompt="A futuristic cityscape at night, cyberpunk style",
             width=1024,
             height=1024,
-            steps=30
+            steps=30,
         )
         print("Stability Image generated (bytes):", len(stability_image) if stability_image else 0)
-        
+
         # Save the image bytes to a file
         if stability_image:
             with open(OUTPUTS_DIR / "stability_cityscape.png", "wb") as f:
@@ -70,11 +71,13 @@ def image_examples():
     except Exception as e:
         print(f"Error with Stability AI: {e}")
 
+
 def main():
     """Run all examples."""
     print("\nRunning image examples...")
     print(f"All outputs will be saved to the '{OUTPUTS_DIR}' directory.")
     image_examples()
 
+
 if __name__ == "__main__":
-    main() 
+    main()

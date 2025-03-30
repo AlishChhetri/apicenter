@@ -8,7 +8,7 @@ from typing import Dict, Any, Optional
 
 class CredentialsProvider:
     """Provider for loading and managing API credentials across services."""
-    
+
     def __init__(self) -> None:
         """Initialize credentials by locating and loading the credentials file."""
         self.credentials_path = self.find_credentials_file()
@@ -17,25 +17,25 @@ class CredentialsProvider:
     def find_credentials_file(self) -> Path:
         """Locate credentials file in standard locations or from environment variable."""
         # Check environment variable first
-        env_path = os.getenv('APICENTER_CREDENTIALS_PATH')
+        env_path = os.getenv("APICENTER_CREDENTIALS_PATH")
         if env_path:
             return Path(env_path)
-            
+
         # Search for credentials file in standard locations
         possible_paths = [
-            Path.cwd() / 'credentials.json',  # Current directory
-            Path(__file__).parent.parent.parent / 'credentials.json',  # Project root
-            Path.home() / '.apicenter' / 'credentials.json',  # User's home directory
-            Path.home() / '.config' / 'apicenter' / 'credentials.json',  # XDG config dir
+            Path.cwd() / "credentials.json",  # Current directory
+            Path(__file__).parent.parent.parent / "credentials.json",  # Project root
+            Path.home() / ".apicenter" / "credentials.json",  # User's home directory
+            Path.home() / ".config" / "apicenter" / "credentials.json",  # XDG config dir
         ]
-        
+
         # Return first existing credentials file
         for path in possible_paths:
             if path.exists():
                 return path
-                
+
         # Default to project root if no file found
-        return Path(__file__).parent.parent.parent / 'credentials.json'
+        return Path(__file__).parent.parent.parent / "credentials.json"
 
     def load_credentials(self) -> Dict[str, Any]:
         """Load and parse credentials from JSON file with fallback for missing file."""
@@ -49,7 +49,7 @@ class CredentialsProvider:
                 "modes": {
                     "text": {"providers": {}},
                     "image": {"providers": {}},
-                    "audio": {"providers": {}}
+                    "audio": {"providers": {}},
                 }
             }
         except json.JSONDecodeError:
@@ -62,7 +62,7 @@ class CredentialsProvider:
         # No credentials needed for local providers
         if provider in ["ollama"]:
             return {}
-            
+
         # Look up credentials in the loaded configuration
         try:
             return self.credentials["modes"][mode]["providers"][provider]

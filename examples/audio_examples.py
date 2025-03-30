@@ -19,6 +19,7 @@ from pathlib import Path
 OUTPUTS_DIR = Path(__file__).parent / "outputs"
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
+
 def audio_examples():
     """Examples of audio generation using ElevenLabs."""
     # ElevenLabs example
@@ -29,11 +30,11 @@ def audio_examples():
             prompt="Hello! This is a test of text to speech.",
             voice_id="21m00Tcm4TlvDq8ikWAM",  # Default voice
             stability=0.5,
-            similarity_boost=0.75
+            similarity_boost=0.75,
         )
         print("Audio generated successfully!")
         print(f"Generated audio bytes: {len(audio) if audio else 0}")
-        
+
         # Save the audio to a file
         if audio:
             with open(OUTPUTS_DIR / "elevenlabs_voice.mp3", "wb") as f:
@@ -42,12 +43,14 @@ def audio_examples():
     except Exception as e:
         print(f"Error with ElevenLabs: {e}")
 
+
 def main():
     """Run all examples."""
-    
+
     print("\nRunning audio examples...")
     print(f"All outputs will be saved to the '{OUTPUTS_DIR}' directory.")
     audio_examples()
 
+
 if __name__ == "__main__":
-    main() 
+    main()
