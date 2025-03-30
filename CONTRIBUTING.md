@@ -21,27 +21,32 @@ Thank you for your interest in contributing to APICenter! This guide explains ho
 
 ## Development Environment
 
-### Using Poetry (Recommended)
+### Development Setup
+
+The recommended way to set up your development environment is using Poetry:
 
 ```bash
-# Install Poetry if you haven't already
-curl -sSL https://install.python-poetry.org | python3 -
+# Clone the repository
+git clone https://github.com/alishchhetri/apicenter.git
+cd apicenter
 
-# Install dependencies
+# Install with Poetry (recommended)
 poetry install
 
-# Activate the virtual environment
-poetry env activate
+# Activate the Poetry virtual environment
+poetry shell
 ```
 
-### Using Pip
+### Alternative: Using Pip
+
+If you prefer not to use Poetry, you can use pip:
 
 ```bash
 # Install the package in development mode
 pip install -e .
 
 # Install development dependencies
-pip install -r requirements-dev.txt
+pip install ruff pytest coverage
 ```
 
 ## Project Structure

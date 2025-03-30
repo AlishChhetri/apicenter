@@ -46,18 +46,25 @@ text = apicenter.text(
 
 ## Installation
 
+APICenter is currently in development and not yet published to PyPI. To use it:
+
 ```bash
-# Using pip
-pip install apicenter
-
-# Using poetry
-poetry add apicenter
-
-# For development
+# Clone the repository
 git clone https://github.com/alishchhetri/apicenter.git
 cd apicenter
+
+# Install using Poetry (recommended)
+poetry install
+
+# Alternatively, install in development mode with pip
 pip install -e .
 ```
+
+### Requirements
+
+- Python 3.12 or higher
+- Required packages are listed in pyproject.toml
+- For local model support: [Ollama](https://ollama.ai/)
 
 ## Quick Start
 
