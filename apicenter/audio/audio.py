@@ -1,39 +1,24 @@
-from typing import Any
-from elevenlabs import client
-from ..core.base import BaseProvider
+from apicenter.core.credentials import credentials
+from .providers.elevenlabs import call_elevenlabs
 
-class AudioProvider(BaseProvider[bytes]):
-    """Provider for audio generation using ElevenLabs."""
-    
-    def _get_mode(self) -> str:
-        return "audio"
-    
-    def validate_params(self) -> None:
-        """Validate the provider-specific parameters."""
-        if self.provider != "elevenlabs":
-            raise ValueError(f"Unsupported audio provider: {self.provider}")
-        if not self.model.startswith(("eleven_", "eleven_multilingual_")):
-            raise ValueError(f"Invalid ElevenLabs model: {self.model}")
-    
-    def call(self) -> bytes:
-        """Make the API call and return the response."""
-        api_client = client.Client(api_key=self.config.api_key)
-        
-        # Get available voices
-        voices = api_client.voices.get_all()
-        voice = next(
-            (v for v in voices if v.voice_id == self.kwargs.get("voice_id", "21m00Tcm4TlvDq8ikWAM")),
-            voices[0]  # Default to first voice if specified voice not found
-        )
-        
-        # Generate audio
-        audio = api_client.generate(
-            text=self.prompt,
-            voice=voice,
-            model=self.model
-        )
-        
-        return audio
+
+class AudioProvider:
+    def __init__(self, provider, model, prompt, **kwargs):
+        self.provider = provider.lower()
+        self.model = model
+        self.prompt = prompt
+        self.kwargs = kwargs
+        self.credentials = credentials.get_credentials("audio", self.provider)
+
+    def get_response(self):
+        """Automatically call the correct audio generation API based on provider."""
+        providers = {
+            "elevenlabs": lambda: call_elevenlabs(self.model, self.prompt, self.credentials, **self.kwargs),
+        }
+
+        return providers.get(
+            self.provider, lambda: f"Error: Unsupported provider {self.provider}"
+        )()
 
 
 def audio(provider, model, prompt, **kwargs):
