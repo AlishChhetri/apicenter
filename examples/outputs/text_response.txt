@@ -1,8 +1,9 @@
 {
-  "name": "Elena Santos",
-  "age": 32,
-  "occupation": "Software Engineer",
-  "hobbies": ["Reading", "Hiking", "Cooking"],
-  "location": "San Francisco, CA",
-  "personality_traits": ["Friendly", "Ambitious", "Curious"]
+  "name": "Anna Smith",
+  "age": 28,
+  "occupation": "Marketing Manager",
+  "hobbies": ["reading", "traveling", "yoga"],
+  "location": "New York City",
+  "relationship_status": "single",
+  "education": "Bachelor's degree in Communications"
 }

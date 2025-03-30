@@ -1,16 +1,13 @@
 {
-  "name": "Elena Santos",
-  "age": 32,
-  "occupation": "Software Engineer",
+  "name": "Anna Smith",
+  "age": 28,
+  "occupation": "Marketing Manager",
   "hobbies": [
-    "Reading",
-    "Hiking",
-    "Cooking"
+    "reading",
+    "traveling",
+    "yoga"
   ],
-  "location": "San Francisco, CA",
-  "personality_traits": [
-    "Friendly",
-    "Ambitious",
-    "Curious"
-  ]
+  "location": "New York City",
+  "relationship_status": "single",
+  "education": "Bachelor's degree in Communications"
 }
