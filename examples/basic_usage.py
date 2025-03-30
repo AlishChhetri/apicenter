@@ -1,5 +1,10 @@
 from apicenter import apicenter
 import os
+from pathlib import Path
+
+# Create examples/outputs directory if it doesn't exist
+OUTPUTS_DIR = Path(__file__).parent / "outputs"
+OUTPUTS_DIR.mkdir(exist_ok=True)
 
 def text_examples():
     """Examples of text generation with different providers."""
@@ -14,6 +19,10 @@ def text_examples():
         )
         print("\nOpenAI Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "openai_haiku.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with OpenAI: {e}")
     
@@ -26,6 +35,10 @@ def text_examples():
         )
         print("\nAnthropic Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "anthropic_story.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Anthropic: {e}")
     
@@ -39,6 +52,10 @@ def text_examples():
         )
         print("\nOllama Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "ollama_response.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Ollama: {e}")
         print("Note: Ollama requires a local installation with models downloaded.")
@@ -57,6 +74,21 @@ def image_examples():
         )
         print("\nOpenAI Image URL:")
         print(image_url)
+        
+        # Save URL to file
+        with open(OUTPUTS_DIR / "openai_image_url.txt", "w") as f:
+            f.write(image_url)
+        
+        # Optionally download the image
+        try:
+            import requests
+            response = requests.get(image_url)
+            if response.status_code == 200:
+                with open(OUTPUTS_DIR / "openai_image.png", "wb") as f:
+                    f.write(response.content)
+                print(f"Image saved to {OUTPUTS_DIR}/openai_image.png")
+        except Exception as e:
+            print(f"Could not download image: {e}")
     except Exception as e:
         print(f"\nError with OpenAI image: {e}")
 
@@ -74,7 +106,7 @@ def audio_examples():
         print("\nElevenLabs Audio generated (bytes):", len(audio_data))
         
         # Example of saving audio to a file
-        save_path = "output.mp3"
+        save_path = OUTPUTS_DIR / "basic_audio.mp3"
         if audio_data:
             with open(save_path, "wb") as f:
                 f.write(audio_data)
@@ -87,6 +119,7 @@ def main():
     print("APICenter Basic Usage Examples")
     print("=============================")
     print("This demonstrates the minimal usage of each mode and provider.")
+    print(f"All outputs will be saved to the '{OUTPUTS_DIR}' directory.")
     
     # Run examples
     text_examples()

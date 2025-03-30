@@ -1,12 +1,16 @@
 {
-  "name": "Emily Parker",
+  "name": "Elena Jones",
   "age": 28,
-  "gender": "female",
-  "occupation": "teacher",
+  "occupation": "Graphic Designer",
   "hobbies": [
+    "painting",
     "reading",
-    "yoga",
-    "painting"
+    "traveling"
   ],
-  "pets": true
+  "personality_traits": [
+    "creative",
+    "curious",
+    "easygoing"
+  ],
+  "location": "New York City"
 }

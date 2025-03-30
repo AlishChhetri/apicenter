@@ -14,6 +14,12 @@ The key concept is that all providers follow the same basic structure:
 from apicenter import apicenter
 import json
 import time
+import os
+from pathlib import Path
+
+# Create examples/outputs directory if it doesn't exist
+OUTPUTS_DIR = Path(__file__).parent / "outputs"
+OUTPUTS_DIR.mkdir(exist_ok=True)
 
 
 def basic_examples():
@@ -29,6 +35,10 @@ def basic_examples():
         )
         print("\nOpenAI Basic Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "neural_network_explanation.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with OpenAI: {e}")
     
@@ -41,6 +51,10 @@ def basic_examples():
         )
         print("\nAnthropic Basic Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "dolphin_facts.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Anthropic: {e}")
     
@@ -53,6 +67,10 @@ def basic_examples():
         )
         print("\nOllama Basic Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "animal_list.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Ollama: {e}")
         print("Note: Make sure Ollama is installed and running locally.")
@@ -78,6 +96,10 @@ def chat_conversation_example():
         )
         print("\nAssistant:", response)
         
+        # Save first response
+        with open(OUTPUTS_DIR / "fusion_fission_explanation.txt", "w") as f:
+            f.write(response)
+        
         # Add response to messages and continue conversation
         messages.append({"role": "assistant", "content": response})
         messages.append({"role": "user", "content": "Which one is used in nuclear power plants?"})
@@ -90,6 +112,14 @@ def chat_conversation_example():
         )
         print("\nUser: Which one is used in nuclear power plants?")
         print("Assistant:", response)
+        
+        # Save the full conversation to a JSON file
+        conversation = {
+            "messages": messages,
+            "final_response": response
+        }
+        with open(OUTPUTS_DIR / "nuclear_conversation.json", "w") as f:
+            json.dump(conversation, f, indent=2)
     except Exception as e:
         print(f"\nError with chat conversation: {e}")
 
@@ -112,6 +142,10 @@ def ollama_examples():
         print("\ndeepseek-r1 Response:")
         print(response)
         
+        # Save response to file
+        with open(OUTPUTS_DIR / "recursion_explanation.txt", "w") as f:
+            f.write(response)
+        
         # With custom parameters
         response = apicenter.text(
             provider="ollama",
@@ -122,6 +156,10 @@ def ollama_examples():
         )
         print("\ndeepseek-r1 Creative Response (with custom params):")
         print(response)
+        
+        # Save the creative response
+        with open(OUTPUTS_DIR / "ai_poem.txt", "w") as f:
+            f.write(response)
         
         # Chat conversation with Ollama
         messages = [
@@ -145,6 +183,14 @@ def ollama_examples():
         )
         print("\nUser: Who created these laws?")
         print("Assistant:", response)
+        
+        # Save the robotics laws conversation
+        robotics_conversation = {
+            "messages": messages,
+            "final_response": response
+        }
+        with open(OUTPUTS_DIR / "robotics_laws_conversation.json", "w") as f:
+            json.dump(robotics_conversation, f, indent=2)
     except Exception as e:
         print(f"\nError with Ollama: {e}")
         print("Note: Make sure Ollama is installed and running.")
@@ -180,9 +226,22 @@ def structured_output_example():
             parsed = json.loads(response)
             print("\nStructured JSON output:")
             print(json.dumps(parsed, indent=2))
+            
+            # Save both raw and parsed JSON
+            with open(OUTPUTS_DIR / "fictional_person_raw.txt", "w") as f:
+                f.write(response)
+                
+            with open(OUTPUTS_DIR / "fictional_person.json", "w") as f:
+                json.dump(parsed, f, indent=2)
+                
+            print(f"JSON saved to {OUTPUTS_DIR}/fictional_person.json")
         except json.JSONDecodeError:
             print("\nResponse couldn't be parsed as JSON:")
             print(response)
+            
+            # Save the raw response
+            with open(OUTPUTS_DIR / "fictional_person_failed.txt", "w") as f:
+                f.write(response)
     except Exception as e:
         print(f"\nError with structured output: {e}")
 
@@ -191,6 +250,7 @@ def main():
     """Run all LLM examples."""
     print("APICenter LLM Examples")
     print("======================")
+    print(f"All outputs will be saved to the '{OUTPUTS_DIR}' directory.")
     
     # Run examples
     basic_examples()

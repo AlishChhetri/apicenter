@@ -5,19 +5,27 @@ from pathlib import Path
 import requests
 from typing import Optional, Dict, Any
 
+# Create examples/outputs directory if it doesn't exist
+OUTPUTS_DIR = Path(__file__).parent / "outputs"
+OUTPUTS_DIR.mkdir(exist_ok=True)
+
 def save_audio_to_file(audio_data: bytes, filename: str) -> None:
     """Save audio data to a file."""
-    with open(filename, 'wb') as f:
+    # Create the full path with the outputs directory
+    filepath = OUTPUTS_DIR / filename
+    with open(filepath, 'wb') as f:
         f.write(audio_data)
-    print(f"Audio saved to {filename}")
+    print(f"Audio saved to {filepath}")
 
 def download_image(url: str, filename: str) -> None:
     """Download an image from a URL and save it."""
+    # Create the full path with the outputs directory
+    filepath = OUTPUTS_DIR / filename
     response = requests.get(url)
     if response.status_code == 200:
-        with open(filename, 'wb') as f:
+        with open(filepath, 'wb') as f:
             f.write(response.content)
-        print(f"Image downloaded to {filename}")
+        print(f"Image downloaded to {filepath}")
     else:
         print(f"Failed to download image: {response.status_code}")
 
@@ -39,6 +47,10 @@ def advanced_text_generation():
         )
         print("\nOpenAI Advanced Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "openai_recipe.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with OpenAI: {e}")
 
@@ -56,6 +68,10 @@ def advanced_text_generation():
         )
         print("\nAnthropic Advanced Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "anthropic_quantum.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Anthropic: {e}")
         
@@ -70,6 +86,10 @@ def advanced_text_generation():
         )
         print("\nOllama Advanced Response:")
         print(response)
+        
+        # Save response to file
+        with open(OUTPUTS_DIR / "ollama_poem.txt", "w") as f:
+            f.write(response)
     except Exception as e:
         print(f"\nError with Ollama: {e}")
 
@@ -90,7 +110,13 @@ def advanced_image_generation():
         )
         print("\nOpenAI DALL-E Advanced Response (URL):")
         print(response)
-        print("You can download this image from the URL and save it locally if needed.")
+        
+        # Save URL to file
+        with open(OUTPUTS_DIR / "dalle_steampunk_url.txt", "w") as f:
+            f.write(response)
+            
+        # Download the image
+        download_image(response, "dalle_steampunk.png")
     except Exception as e:
         print(f"\nError with OpenAI DALL-E: {e}")
 
@@ -111,10 +137,9 @@ def advanced_image_generation():
         
         # Save the image if we got a response
         if response:
-            os.makedirs("outputs", exist_ok=True)
-            with open("outputs/stability_viking.png", "wb") as f:
+            with open(OUTPUTS_DIR / "stability_viking.png", "wb") as f:
                 f.write(response)
-            print("Image saved to outputs/stability_viking.png")
+            print(f"Image saved to {OUTPUTS_DIR}/stability_viking.png")
     except Exception as e:
         print(f"\nError with Stability AI: {e}")
 
@@ -137,10 +162,7 @@ def advanced_audio_generation():
         
         # Save the audio if we got a response
         if response:
-            os.makedirs("outputs", exist_ok=True)
-            with open("outputs/elevenlabs_advanced.mp3", "wb") as f:
-                f.write(response)
-            print("Audio saved to outputs/elevenlabs_advanced.mp3")
+            save_audio_to_file(response, "elevenlabs_advanced.mp3")
     except Exception as e:
         print(f"\nError with ElevenLabs: {e}")
 
@@ -158,28 +180,18 @@ def save_responses_example():
         )
         
         # Save as plain text
-        os.makedirs("outputs", exist_ok=True)
-        with open("outputs/text_response.txt", "w") as f:
+        with open(OUTPUTS_DIR / "text_response.txt", "w") as f:
             f.write(text_response)
             
         # Save as structured data (assume JSON response)
         try:
             person_data = json.loads(text_response)
-            with open("outputs/structured_response.json", "w") as f:
+            with open(OUTPUTS_DIR / "structured_response.json", "w") as f:
                 json.dump(person_data, f, indent=2)
             print("\nText response saved as both plain text and structured JSON")
         except json.JSONDecodeError:
             # Not valid JSON, just save as text
             print("\nText response saved as plain text only (not valid JSON)")
-        
-        print("""
-To save an image from a URL returned by some providers:
-import requests
-image_url = apicenter.image(...)
-response = requests.get(image_url)
-with open('outputs/image.png', 'wb') as f:
-    f.write(response.content)
-""")
     except Exception as e:
         print(f"\nError saving responses: {e}")
 
@@ -189,6 +201,7 @@ def main():
     print("APICenter Advanced Usage Examples")
     print("================================")
     print("This demonstrates more complex usage of the API with various parameters.")
+    print(f"All outputs will be saved to the '{OUTPUTS_DIR}' directory.")
     
     # Run advanced examples
     advanced_text_generation()

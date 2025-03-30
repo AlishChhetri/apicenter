@@ -164,5 +164,16 @@ cython_debug/
 
 # apicenter
 
-tests/output
+# credentials
+
 credentials.json
+
+# outputs
+
+output/
+outputs/
+examples/outputs/
+example_outputs/
+tests/coverage_html/
+
+
