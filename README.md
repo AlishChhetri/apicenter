@@ -62,9 +62,6 @@ poetry install
 
 # Or add as a local dependency in your existing Poetry project
 poetry add path/to/apicenter
-
-# Alternatively, install in development mode with pip
-pip install -e .
 ```
 
 ### Requirements
