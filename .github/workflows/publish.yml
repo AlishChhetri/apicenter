@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Create GitHub Release
 
 on:
   push:
@@ -6,13 +6,11 @@ on:
       - 'v*'  # Run when tag is pushed matching pattern v*, e.g. v1.0.0
 
 jobs:
-  deploy:
-    name: Build and publish Python package
+  release:
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-    environment: pypi_api_token
     permissions:
       contents: write  # Needed for creating GitHub releases
-      id-token: write  # Needed for PyPI trusted publishing
     
     steps:
       - uses: actions/checkout@v4
@@ -46,9 +44,4 @@ jobs:
             dist/*.tar.gz
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
-          
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          verbose: true 
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }} 

@@ -50,7 +50,7 @@ text = apicenter.text(
 
 ## Installation
 
-APICenter is currently in development and not yet published to PyPI. To use it:
+APICenter is currently in development and not available on PyPI. It can be used locally by:
 
 ```bash
 # Clone the repository
@@ -59,6 +59,9 @@ cd apicenter
 
 # Install using Poetry (recommended)
 poetry install
+
+# Or add as a local dependency in your existing Poetry project
+poetry add path/to/apicenter
 
 # Alternatively, install in development mode with pip
 pip install -e .
